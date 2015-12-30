@@ -1,0 +1,15 @@
+Windows Registry Editor Version 5.00
+
+[PRE\Microsoft\Windows\CurrentVersion\Group Policy\Scripts\Startup]
+
+[PRE\Microsoft\Windows\CurrentVersion\Group Policy\Scripts\Startup\0]
+"GPO-ID"="LocalGPO"
+"SOM-ID"="Local"
+"DisplayName"="Local Group Policy"
+"GPOName"="Local Group Policy"
+
+[PRE\Microsoft\Windows\CurrentVersion\Group Policy\Scripts\Startup\0\0]
+"Script"="C:\\None\\__install.bat"
+"Parameters"=""
+"IsPowershell"=dword:00000000
+"ExecTime"=hex(b):00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00

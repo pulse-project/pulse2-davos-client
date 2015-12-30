@@ -1,0 +1,22 @@
+#!/bin/bash
+postinst_dir="/imaging_server/masters/$IMAGE_UUID/postinst.d"
+
+# If postinst_dir doesn't exist, leaving
+[ ! -d $postinst_dir ] && exit 0
+
+#Counting postinst scripts number
+postinst_count=$(ls $postinst_dir/|wc -l)
+
+# Running
+x=0
+for z in $postinst_dir/*; do
+  # If it doesn't success, no matter
+  echo "XXX"
+  echo $(($x * 100 / $postinst_count))
+  echo "Running $(basename $z)"
+  echo "\n"
+  bash $z 2>/tmp/postinst.$x.log
+  x=$(( x + 1 ))
+  echo "XXX"
+done|dialog --backtitle "Pulse imaging client" --title "Step 2: Post-Imaging" --gauge "Please wait" 20 70 0 1>&2
+exit 0

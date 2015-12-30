@@ -1,0 +1,7 @@
+#!/bin/bash
+if [ ! -z $master_id ]; then
+  echo "Running postinstall scripts ..."
+  for z in /imaging_server/masters/$master_id/postinst.d/*; do
+    source $z || true
+  done
+fi

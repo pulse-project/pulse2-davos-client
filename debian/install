@@ -1,0 +1,3 @@
+var/lib/pulse2/imaging/postinst		var/lib/pulse2/imaging/
+var/lib/pulse2/imaging/davos		var/lib/pulse2/imaging/
+var/lib/pulse2/imaging/bootloader	var/lib/pulse2/imaging/

@@ -1,0 +1,58 @@
+#!/bin/bash
+#
+# (c) 2003-2007 Linbox FAS, http://linbox.com
+# (c) 2008-2009 Mandriva, http://www.mandriva.com
+#
+# $Id$
+#
+# This file is part of Pulse 2, http://pulse2.mandriva.org
+#
+# Pulse 2 is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# Pulse 2 is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Pulse 2; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+# MA 02110-1301, USA.
+#
+ETH=`cat /etc/eth`
+MAC=`cat /etc/mac`
+
+. /etc/netinfo.sh
+SRV=$Next_server
+
+# get the delay on the command line
+T=0
+if grep -q revowait= /etc/cmdline ;then
+    T=`sed -e 's/.*revowait=\([0-9]*\).*/\1/' </etc/cmdline`
+fi
+
+[ -z $T ] && exit 0
+[ $T -eq 0 ] && exit 0
+
+
+# get the wait value from the server
+WAIT=`echo -en "T;$1;$T Mc:$MAC" | nc -p 1001 -w 2 $SRV 1001`
+
+[ -z $WAIT ] && exit 0
+[ $WAIT -eq 0 ] && exit 0
+
+# check if the previous file was a small one (< 3MB)
+# if so, only wait one second.
+DU=`du /tmpfs|cut -f 1`
+NUMFILES=`ls /tmpfs|grep -c ^`
+if [ $NUMFILES -gt 0 -a $DU -lt 3000 ]; then
+    WAIT=1
+fi
+if [ $NUMFILES -gt 0 -a $DU -lt 30 ]; then
+    exit 0
+fi
+
+sleep $WAIT

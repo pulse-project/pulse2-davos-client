@@ -1,0 +1,55 @@
+#!/usr/bin/env python
+
+import signal
+from davos import davosManager
+from davos.image_saver import imageSaver
+from davos.image_restorer import imageRestorer
+import sys
+import argparse
+
+def signal_handler(signum, frame):
+    pass
+
+if __name__ == '__main__':
+
+    # Trap signals
+    #signal.signal(signal.SIGINT, signal_handler)
+    
+    # Setting argparse
+    parser = argparse.ArgumentParser(description='Davos imaging utility')
+
+    parser.add_argument('--select', help='Select image from list (restore mode)', action='store_true')
+    parser.add_argument('--create', dest='action', help='Image creation mode', action='store_const', const='SAVE_IMAGE')
+    parser.add_argument('--restore', dest='action', help='Image restoration mode', action='store_const', const='RESTORE_IMAGE')
+
+    # Parse input args
+    args = parser.parse_args()
+
+    # Initialize davos Manager
+    mgr = davosManager()
+
+    # Get davos action
+    if args.action:
+        action = args.action
+    else:
+        action = mgr.kernel_params['davos_action']
+
+    #imageRestorer(mgr).apply_convergence() 
+    #sys.exit(0)
+
+    if action == 'SAVE_IMAGE':    
+        d = imageSaver(mgr)
+        d.start()
+    elif action == 'RESTORE_IMAGE':
+        d = imageRestorer(mgr)
+
+        if args.select and not d.select_image():
+            sys.exit(1)
+
+        d.start()
+    else:
+        print 'Unknown action, leaving'
+        #mgr.runInShell('reboot')
+
+    # Reboot at the end
+    mgr.runInShell('reboot')

@@ -1,0 +1,30 @@
+#!/bin/bash
+echo $@ > /tmp/clone_cmd
+
+# The received data is a bullshit, so to /dev/null
+cat > /dev/null
+
+# udp-receiver => partclone
+# IMPORTANT: if gzip was used in the source (default), don't forget to unzip
+
+# If caller is symlink, orig is target.orig
+bin=$0
+test -L $0 && bin=/usr/sbin/$(readlink $0)
+
+#dialog --yesno "Le client Multicast est prêt appuyez sur Entrée pour commencer le transfert" 9 70
+
+# Increment the partclone_index
+restore_index=$(expr 1 + `cat /tmp/partclone_index`)
+echo $restore_index > /tmp/partclone_index
+
+# Launching original partclone binary with an udp-receiver pipe
+multicast_group=$(grep 'davos_multicast_group=' /proc/cmdline | sed 's|.*davos_multicast_group=\([^ ]*\).*|\1|')
+[ -z "$multicast_group" ] && multicast_group='0'
+
+ip_prefix="239.255".$multicast_group
+ttl=4
+
+cmp_tool=$(grep 'davos_cmp_tool=' /proc/cmdline | sed 's|.*davos_cmp_tool=\([^ ]*\).*|\1|')
+[ -z "$cmp_tool" ] && cmp_tool='pigz'
+
+udp-receiver --ttl $ttl --nokbd --mcast-rdv-address $ip_prefix.$restore_index 2>/tmp/udp_output | $cmp_tool -d | $bin.orig $@ 2>&1| partclone_wrapper "Muticast client" 1

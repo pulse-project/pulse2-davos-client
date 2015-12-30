@@ -1,0 +1,17 @@
+Source: pulse2-davos-client
+Section: admin
+Priority: extra
+Maintainer: Ishak BELAHMAR <ibelahmar@mandriva.com>
+Build-Depends: debhelper (>= 5.0.37.2), python-pyquery(>= 1.2)
+Standards-Version: 3.9.4
+Homepage: http://pulse2.mandriva.org
+
+Package: pulse2-davos-client
+Architecture: all
+Depends: ${misc:Depends}, pulse2-package-server(>= 2.1)
+#Conflicts: pulse2-imaging-client
+Description: Pulse 2 Davos imaging client
+ Pulse 2 Davos imaging client based on Clonezilla permit to create
+ and restore disk images with advanced mastering functionnalities.
+ .
+ This package is a part of Mandriva Pulse2 solution.

@@ -1,0 +1,107 @@
+#!/bin/bash
+# Any error breaks the script
+
+bash
+
+set -e
+# Trap Ctrl-C Ctrl-Z
+trap "" 2 20
+
+# Mounting NFS shares
+source /etc/init.d/mount_pulse_nfs
+
+pclone_bins=$(echo /usr/sbin/partclone.{btrfs,dd,exfat,extfs,fat,hfsp,imager,jfs,minix,ntfs,reiser4,reiserfs,ufs,vmfs,vmfs5,xfs})
+
+# =======================================================
+# 1ST PASS: GENERATING CLONEZILLA INFO FILES
+# =======================================================
+
+# Copy the fake partclone1 to /usr/sbin
+# (this one print just a useless text)
+echo $pclone_bins| xargs -n1 cp /usr/share/davos/relay_server/partclone.fake.1
+
+# Removing clone_cmd file if exists
+test -f /tmp/clone_cmd && rm -f /tmp/clone_cmd
+
+# Launch savimg to generate all clonezilla stuff files 
+yes | /usr/sbin/ocs-sr -nogui -q2 -c -j2 -z1 -i 20000000 -sc -p true savedisk image sda
+
+# Get multicast group
+multicast_group=$(grep 'davos_multicast_group=' /proc/cmdline | sed 's|.*davos_multicast_group=\([^ ]*\).*|\1|')
+[ -z "$multicast_group" ] && multicast_group='0'
+
+# Copying clonezilla stuff data to Imaging server
+
+test -d /imaging_server/masters/tmp.$multicast_group && rm -r /imaging_server/masters/tmp.$multicast_group
+mkdir /imaging_server/masters/tmp.$multicast_group
+
+cp -r /home/partimag/image/* /imaging_server/masters/tmp.$multicast_group && rm -r '/home/partimag/image'
+
+# =======================================================
+# 2ND PASS : REAL SENDING
+# =======================================================
+
+# Copying 2nd fake partclone 
+echo $pclone_bins| xargs -n1 cp /usr/share/davos/relay_server/partclone.fake.2
+
+# ==========================================================
+# UDP Sender options
+# ==========================================================
+udp_options="--nokbd"
+
+# ====== Duplex mode
+
+udp_options="$udp_options --$(dialog --backtitle 'Mandriva Pulse : Imaging Relay Server' --title 'Duplex mode' --menu 'Sélectionnez le mode de transfert: [Reportez-vous à la documentation pour plus de détails]' 15 70 3 'full-duplex' 'Mode Full-duplex' 'half-duplex' 'Mode Half-duplex' 3>&2 2>&1 1>&3-)"
+
+# ====== Minimal hosts
+
+min_hosts=''
+
+while true; do
+
+   # Break if int
+   [[ $min_hosts =~ ^-?[0-9]+$ ]] && break
+
+   min_hosts=$(dialog --backtitle 'Mandriva Pulse : Imaging Relay Server' --title 'Nombre de clients' --inputbox 'Entrez le nombre seuil de machines. Une fois ce nombre de clients connectés est atteint, la transmission démarrera aussitôt. Laissez à 0 pour un nombre illimité.' 9 70 0 3>&2 2>&1 1>&3-)
+done
+
+test $min_hosts -ge 0 && udp_options="$udp_options --min-receivers $min_hosts"
+
+# ======= Max wait
+
+max_wait=''
+
+while true; do
+
+   # Break if int
+   [[ $max_wait =~ ^-?[0-9]+$ ]] && [ $max_wait -ge 30 ] && break
+
+   max_wait=$(dialog --backtitle 'Mandriva Pulse : Imaging Relay Server' --title "Temps d'attente maximal" --inputbox "Entrez le temps d'attente maximal en secondes [minimum : 30]. Au bout de ce temps, la transmission démarrera même s'il n'y a pas assez de machines." 9 70 30 3>&2 2>&1 1>&3-)
+done
+
+udp_options="$udp_options --max-wait $max_wait"
+
+echo "$udp_options" > /tmp/udp_options
+
+# Reset the partclone_index
+echo "0" > /tmp/partclone_index
+
+# Running saved partclone commands
+bash /tmp/clone_cmd
+
+# Removing temp image
+rm -r /imaging_server/masters/tmp.$multicast_group
+
+# Trying to read master_id file
+MountSystem
+master_id=$(cat /mnt/master_id)
+#rm -f /mnt/master_id
+umount /mnt/
+
+echo "Running postinstall scripts ..."
+
+if [ ! -z $master_id ]; then
+  for z in /imaging_server/masters/$master_id/postinst.d/*; do
+    source $z || true
+  done
+fi

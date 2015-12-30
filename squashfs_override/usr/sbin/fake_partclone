@@ -1,0 +1,68 @@
+#!/bin/bash
+
+# Get original partclone binary
+bin=$0
+# If caller is not pointing to fake_partclone, then bin isn't $0
+readlink $0|grep fake_partclone >>/dev/null || bin=/usr/sbin/$(readlink $0)
+
+# Increment the partclone_index
+#restore_index=$(expr 1 + `cat /tmp/partclone_index`)
+#echo $restore_index > /tmp/partclone_index
+
+cmp_tool='pigz'
+
+
+case "$CLMODE" in
+    SAVE_IMAGE)
+      # Save image to Packager Server
+      { { $bin.orig -f1 $@ 2>&3 |$cmp_tool -c --fast; } 2>&3 3>&1 1>&2- | partclone_wrapper "Imaging Relay Server"; } 3>&1
+      [ ! $? = 0 ] && dialog --title 'Message' --msgbox 'Partclone error!' 10 60
+      ;;
+    RESTORE_IMAGE)
+      # Restore Image from Package server
+      cat| $cmp_tool -d | $bin.orig -f1 $@ 2>&1| partclone_wrapper "Muticast client" 1
+      [ ! $? = 0 ] && dialog --title 'Message' --msgbox 'Partclone error!' 10 60
+      ;;
+    MCAST_RESTORE)
+      cat > /dev/null
+      multicast_group=$(grep 'davos_multicast_group=' /proc/cmdline | sed 's|.*davos_multicast_group=\([^ ]*\).*|\1|')
+      [ -z "$multicast_group" ] && multicast_group='0'
+      ip_prefix="239.255".$multicast_group
+      ttl=4
+      udp-receiver --ttl $ttl --nokbd --mcast-rdv-address $ip_prefix.$restore_index 2>/tmp/udp_output | $cmp_tool -d | $bin.orig $@ 2>&1| partclone_wrapper "Muticast client" 1   
+      ;;
+    MCAST_RELAY_SEND1)
+      # Multicast relay Sender Step 1
+      # Creating disk structure image without partition data
+      # So here print a dummy result, and saving clone commands
+      # to repeat the process once clients are ready to restore
+      echo $0 $@ >> /tmp/clone_cmd
+      echo "DUMMY"
+      ;;
+    MCAST_RELAY_SEND2)
+      # Multicast relay Sender Step 2
+      # At this step, we wait for the clients to be ready
+      # in order to start the live udp transfer
+      
+      # Reading udp_options [maybe read the from env var]
+      udp_options=$(cat /tmp/udp_options)
+
+      multicast_group=$(grep 'davos_multicast_group=' /proc/cmdline | sed 's|.*davos_multicast_group=\([^ ]*\).*|\1|')
+      [ -z "$multicast_group" ] && multicast_group='0'
+      ip_prefix="239.255".$multicast_group
+      ttl=4
+      
+      { $bin.orig $@ 2>&3 |$cmp_tool -c --fast | udp-sender --ttl $ttl $udp_options --mcast-rdv-address $ip_prefix.$restore_index --mcast-data-address $ip_prefix.200 2>/tmp/udp_output; } 3>&1 1>&2 |     partclone_wrapper "Imaging Relay Server" 0 
+      ;;
+    CDRESTORE)
+      cat|$bin.orig -f1 $@ 2>&1|partclone_wrapper_for_cd
+      r=$?
+      echo "==CLPTEND=="
+      exit $r
+      #cat|$bin.orig -f1 $@ 
+      ;;
+    *)
+      echo "NONE"
+      exit 1
+      ;;
+esac

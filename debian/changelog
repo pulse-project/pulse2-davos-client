@@ -1,0 +1,29 @@
+pulse2-davos-client (0.7) unstable; urgency=low
+
+  * Test-build
+
+ -- root <root@bender.metz.mandriva.com>  Wed, 04 Mar 2015 12:21:00 +0100
+
+pulse2-davos-client (0.5) unstable; urgency=low
+
+  * Test-build
+
+ -- root <root@bender.metz.mandriva.com>  Tue, 03 Mar 2015 18:17:21 +0100
+
+pulse2-davos-client (0.3) unstable; urgency=low
+
+  * Test-build
+
+ -- root <root@bender.metz.mandriva.com>  Tue, 03 Mar 2015 15:04:21 +0100
+
+pulse2-davos-client (0.2) unstable; urgency=low
+
+  * Test-build
+
+ -- root <root@bender.metz.mandriva.com>  Mon, 02 Mar 2015 16:52:41 +0100
+
+pulse2-davos-client (0.1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Ishak BELAHMAR <ibelahmar@mandriva.com>  Fri, 13 Feb 2015 09:13:59 +0100

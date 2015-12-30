@@ -1,0 +1,52 @@
+#!/bin/bash
+
+fs=""
+size=""
+usedspace=""
+elapsed="00:00:00"
+remaining="00:00:00"
+percent=0
+bitrate=0
+total_clients=0
+
+# Strip comma and percent
+stripcomma="sed s/[,%]//g"
+
+[ $CLMODE = "SAVE_IMAGE" ] && dialog_title="Creating disk image ..." && action="Creating image"
+[ $CLMODE = "RESTORE_IMAGE" ] && dialog_title="Restoring disk image ..." && action="Restoring image"
+[ $CLMODE = "MCAST_RESTORE" ] && dialog_title="Restoring disk image (Multicast) ..." && action="Restoring image"
+[ $CLMODE = "MCAST_RELAY_SEND2" ] && dialog_title="Sending image data to clients ..." && action="Sending image data"
+
+cat /dev/stdin| _r_to_n |while read line; do
+  [ -z "$line" ] && continue
+  echo $line|grep 'File system'>/dev/null && fs=$(echo $line|sed 's/File system://'  | sed -e 's/^ *//' -e 's/ *$//')
+  echo $line|grep 'Device size'>/dev/null && size=$(echo $line|sed 's/Device size://'  | sed -e 's/^ *//' -e 's/ *$//')
+  echo $line|grep 'Space in use'>/dev/null && usedspace=$(echo $line|sed 's/Space in use://'  | sed -e 's/^ *//' -e 's/ *$//')
+  
+  if echo $line|grep 'Completed:'>/dev/null; then
+    elapsed=$(echo $line|awk '{ print $2 }'| $stripcomma )
+    remaining=$(echo $line|awk '{ print $4 }'| $stripcomma )
+    percent=$(echo $line|awk '{ print $6 }'| $stripcomma )
+    # decimal point not supoprted by dialog
+    percent=$(echo $percent|tr '.' ' '|awk '{print $1}')
+    bitrate=$(echo $line|awk '{ print $7 }'| $stripcomma|sed 's/Rate://g')
+  fi
+
+cat <<EOF
+XXX
+$percent
+ 
+$dialog_title
+Filesystem: $fs
+Used space: $usedspace
+
+Elapsed time: $elapsed
+Remaining time: $remaining
+
+Bitrate: $bitrate
+XXX
+EOF
+
+done |
+dialog --backtitle "Pulse imaging client" --title "Step 1 : $action" --gauge "Please wait" 15 70 0 1>&2
+exit 0
