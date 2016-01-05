@@ -10,18 +10,6 @@
 # Copy all fs files to squashfs root
 cp -rvf $1/squashfs_override/* ./
 
-# Generate partclone binaries list
-pclone_bins=$(echo usr/sbin/partclone.{btrfs,dd,exfat,extfs,fat,hfsp,imager,jfs,minix,ntfs,reiser4,reiserfs,ufs,vmfs,vmfs5,xfs})
-
-for pclone in $pclone_bins; do
-  if [ ! -f $pclone.orig ]; then
-    # Renaming partclone.x to partclong.x.orig
-    mv $pclone $pclone.orig
-    # Create a symlink to our fake partclone handler
-    chroot . bash -c "ln -s /usr/sbin/fake_partclone /$pclone"
-  fi
-done
-
 # vim instead of vim.tiny
 # Very useful for debug
 cp usr/bin/vim.tiny usr/bin/vim
