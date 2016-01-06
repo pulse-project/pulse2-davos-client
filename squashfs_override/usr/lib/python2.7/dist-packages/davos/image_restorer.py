@@ -32,11 +32,12 @@ class imageRestorer(object):
 
     image_uuid = None
 
-    def __init__(self, manager):
+    def __init__(self, manager, mode):
 
         self.manager = manager
         self.logger = manager.logger
         self.rpc = manager.rpc
+        self.mode = mode
 
     @property
     def available_images(self):
@@ -92,7 +93,10 @@ class imageRestorer(object):
         os.environ['CLMODE'] = 'RESTORE_IMAGE'
 
         # Start the image restore
-        subprocess.call('yes 2>/dev/null| /usr/sbin/ocs-sr -icds -nogui -g auto -e1 auto -e2 -c -r -j2 -p true restoredisk %s sda 1>/dev/null' % self.image_uuid, shell=True)
+        if self.mode == 'multicast':
+            subprocess.call('yes 2>/dev/null| /usr/sbin/ocs-sr -icds -nogui -g auto -e1 auto -e2 -c -r -j2 -p true --mcast-port 2232 multicast_restoredisk %s sda 1>/dev/null' % self.image_uuid, shell=True)
+        else:
+            subprocess.call('yes 2>/dev/null| /usr/sbin/ocs-sr -icds -nogui -g auto -e1 auto -e2 -c -r -j2 -p true restoredisk %s sda 1>/dev/null' % self.image_uuid, shell=True)
 
         # Save image JSON and LOG
         current_ts = time.strftime("%Y-%m-%d %H:%M:%S")

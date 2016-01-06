@@ -21,6 +21,7 @@ if __name__ == '__main__':
     parser.add_argument('--select', help='Select image from list (restore mode)', action='store_true')
     parser.add_argument('--create', dest='action', help='Image creation mode', action='store_const', const='SAVE_IMAGE')
     parser.add_argument('--restore', dest='action', help='Image restoration mode', action='store_const', const='RESTORE_IMAGE')
+    parser.add_argument('--restore-multicast', dest='action', help='Image multicast restoration mode', action='store_const', const='RESTORE_IMAGE_MULTICAST')
 
     # Parse input args
     args = parser.parse_args()
@@ -41,7 +42,14 @@ if __name__ == '__main__':
         d = imageSaver(mgr)
         d.start()
     elif action == 'RESTORE_IMAGE':
-        d = imageRestorer(mgr)
+        d = imageRestorer(mgr,'unicast')
+
+        if args.select and not d.select_image():
+            sys.exit(1)
+
+        d.start()
+    elif action == 'RESTORE_IMAGE_MULTICAST':
+        d = imageRestorer(mgr,'multicast')
 
         if args.select and not d.select_image():
             sys.exit(1)
