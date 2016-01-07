@@ -1,11 +1,11 @@
 #!/bin/bash
 #set -e
 
-# ===================================================== 
-# NOTE : 
+# =====================================================
+# NOTE :
 #  This script will be run in a temporary squashfs dir
 #  $1 is the original dir on the caller script (build.sh)
-# ===================================================== 
+# =====================================================
 
 # Copy all fs files to squashfs root
 cp -rvf $1/squashfs_override/* ./
@@ -14,27 +14,22 @@ cp -rvf $1/squashfs_override/* ./
 # Very useful for debug
 cp usr/bin/vim.tiny usr/bin/vim
 
-# Additionnal packages installation
-# Copying additional debs to /root
-mkdir root/packages
-cp -r $1/packages root/
-
 # Installing additional packages
-chroot . bash -c 'dpkg -i /root/packages/*.deb'
+mount -t proc none ./proc
+cp /etc/resolv.conf ./etc/resolv.conf
+chroot . bash -c 'apt-get update && apt-get -y install python-minimal libpython-stdlib fusioninventory-agent dos2unix && exit'
 
 if [ -n $DEBUG ]; then
     # Chroot bash for debug mode
-    chroot . bash
+    #chroot . bash
     # Installing debug packages
-    chroot . bash -c 'dpkg -i /root/packages/debug/*.deb'
-
-    # Copying a vim conf
-    cp -r /root/.vim_runtime root/
-    chroot . sh /root/.vim_runtime/install_awesome_vimrc.sh
+    chroot . bash -c 'apt-get -y install git && exit'
 fi
 
-# Removing debs and APT cache
-rm -rf root/packages
+rm -f ./etc/resolv.conf
+umount ./proc
+
+# Removing APT cache
 rm -rf var/cache/apt
 
 # Skip keymap selection (in deploy mode)
