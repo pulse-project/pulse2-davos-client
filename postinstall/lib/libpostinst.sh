@@ -201,10 +201,10 @@ Mount ()
   # Check if parameter is a real number
   if echo "${1}" | grep -q "^[0-9]\+" ;then
     # Check if ${1} is lower or equal than numbers of partitions and not zero
-    partnumber=`grep '[a-z]\+[0-9]\+$' /proc/partitions | wc -l | sed 's/ //g'`
+    partnumber=`grep '[a-z]\+[0-9]\+$' /proc/partitions |grep -v ram |grep -v loop | wc -l | sed 's/ //g'`
     if [ ${1} -le ${partnumber} ] && [ ${1} -gt 0 ]; then
       # Get partition name according to it's number
-      partname=`grep '[a-z]\+[0-9]\+$' /proc/partitions | head -n ${1} | tail -n 1 | awk '{print $NF}'`
+      partname=`grep '[a-z]\+[0-9]\+$' /proc/partitions |grep -v ram |grep -v loop | head -n ${1} | tail -n 1 | awk '{print $NF}'`
       # Looks being a real block device ?
       if [ -b /dev/${partname} ]; then
         mountdisk /dev/${partname}
@@ -228,7 +228,7 @@ Mount ()
 MountSystem ()
 {
   # Number of partitions
-  partnumber=`grep '[a-z]\+[0-9]\+$' /proc/partitions | wc -l | sed 's/ //g'`
+  partnumber=`grep '[a-z]\+[0-9]\+$' /proc/partitions |grep -v ram |grep -v loop | wc -l | sed 's/ //g'`
   for num in `seq 1 ${partnumber}`; do
     Mount ${num}
     # Does it looks like being a Windows ?
