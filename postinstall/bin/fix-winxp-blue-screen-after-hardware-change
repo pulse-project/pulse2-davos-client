@@ -1,0 +1,52 @@
+#!/bin/sh
+
+if [ ! -f "/mnt/windows/system32/config/system" ]; then
+  echo "ERROR: Unable to find /mnt/windows/system32/config/system registry hive!"
+  exit 1
+else
+  echo "INFO: Using /mnt/windows/system32/config/system registry hive"
+fi
+
+# Standard IDE drivers must be there...
+for file in atapi.sys intelide.sys pciide.sys pciidex.sys; do
+  echo
+  echo "INFO: Checking if ${file} is available..."
+  if [ -f "/mnt/windows/system32/drivers/${file}" ]; then
+    echo "INFO: ${file} is present !"
+  else
+    echo "WARN: Unable to find ${file}"
+    if [ -f "/opt/lib/fix-winxp-blue-screen-after-hardware-change/dll/winxp32/${file}" ]; then
+      echo "INFO Copying ${file}"
+      cp "/opt/lib/fix-winxp-blue-screen-after-hardware-change/dll/winxp32/${file}" "/mnt/windows/system32/drivers/${file}"
+    else
+      echo "ERROR: Unable to find ${file} from POSTINSTALL directory in"
+      echo "ERROR: lib/fix-winxp-blue-screen-after-hardware-change/dll/winxp32 subdirectory"
+      echo "ERROR: Please extract this file from a Windows XP driver.cab"
+      # Let's move forward, it may work nevertheless
+      #exit 1
+    fi
+  fi
+done
+echo
+
+# BSOD
+# INACCESSIBLE BOOT DEVICE - 0x0000007B
+#
+# http://www.richud.com/wiki/Windows_XP_Stop_Error_0x0000007B_FIX
+# http://www.virtualbox.org/wiki/Migrate_Windows#StepByStepInstructionsForWindowsXP
+# 
+echo "INFO: Applying Intel IDE standard controller REG file for ControlSet001"
+reged -I -C /mnt/windows/system32/config/system "HKEY_LOCAL_MACHINE\SYSTEM" /opt/lib/fix-winxp-blue-screen-after-hardware-change/fix-ide-controller.reg -L /dev/null
+
+# BSOD
+# DRIVER_UNLOADED_WITHOUT_CANCELLING_PENDING_OPERATIONS - processr.sys or intelppm.sys
+#
+# http://www.virtualbox.org/ticket/420
+# http://blogs.msdn.com/b/virtual_pc_guy/archive/2005/10/24/484461.aspx
+#
+echo "INFO: Applying disable processor features REG file for ControlSet001"
+reged -I -C /mnt/windows/system32/config/system "HKEY_LOCAL_MACHINE\SYSTEM" /opt/lib/fix-winxp-blue-screen-after-hardware-change/fix-processor-features.reg -L /dev/null
+
+# Force the use of ControlSet001
+echo "INFO: Force the use of ControlSet001"
+reged -I -C /mnt/windows/system32/config/system "HKEY_LOCAL_MACHINE\SYSTEM" /opt/lib/fix-winxp-blue-screen-after-hardware-change/force-controlset001.reg -L /dev/null

@@ -1,0 +1,19 @@
+Title OCS Inventory Mac agent (by Brooks Institute)
+Version 
+Description This agent acts much like the OCS Inventory Agent for Windows.  It gathers data (mostly using system_profiler) about the computer it is running on and either uploads the file to the communication server or dumps the data as a compressed XML file when working in local mode.  It gathers all of the same data as the Windows agent except Accesses, Ports, Registry, Slots, and Sounds which either aren't applicable on Macs or I haven't found a way to gather the data for them.  It only works on OSX 10.3+ because 10.3 was the first version to have PHP installed by default.
+
+Note that this agent only works with the latest version OCS (OCS-NG).  If you are using OCS 3.0 you will need to use an older version of the agent.
+DefaultLocation /
+DeleteWarning 
+
+### Package Flags
+
+NeedsAuthorization YES
+Required NO
+Relocatable NO
+RequiresReboot NO
+UseUserMask NO
+OverwritePermissions YES
+InstallFat NO
+RootVolumeOnly YES
+OnlyUpdateInstalledLanguages NO

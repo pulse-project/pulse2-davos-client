@@ -1,0 +1,47 @@
+--- /tmp/ocs_mac_agent.php	Thu Jun 12 12:10:12 2008
++++ /usr/local/sbin/ocs_mac_agent.php	Thu Jun 12 12:10:59 2008
+@@ -190,6 +190,12 @@
+      * @var bool
+      */
+     var $_is10_4 = false;
++    
++    /**
++     * If this is 10.3 on G5
++     * @var bool
++     */
++    var $_is10_3_g5 = false;
+ 
+     /**
+     * Variable for xml input file
+@@ -752,7 +758,18 @@
+             $this->message('Starting inventory of ' . $this->_hostname);
+             // We don't parse into XML because the plist is so generic and
+             // big that it's useless.  Now, if we had domxml...
+-            exec('/usr/sbin/system_profiler -xml SPNetworkDataType SPPCIDataType SPModemDataType SPMemoryDataType SPUSBDataType SPSCSIDataType SPParallelSCSIDataType SPIDEDataType SPParallelATADataType SPSerialATADataType SPFireWireDataType SPHardwareDataType SPSoftwareDataType SPNetworkDataType SPApplicationsDataType SPDisplaysDataType SPPrintersDataType', $a_output, $s_error);
++	    // There's a bug on G5 with 10.3: system_profiler crash and return a truncated XML when querying SPIDEDataType
++	    // Let's check if we're on a bad system, if so don't query SPIDEDataType
++	    exec('/usr/sbin/system_profiler -xml SPHardwareDataType SPSoftwareDataType', $a_output, $s_error);
++	    $this->_profileData = implode("\n", $a_output);
++	    if ((preg_match('/^.*10.3/', $this->_getValByKey('os_version', $this->_profileData))) && (preg_match('/^.*PowerPC G5/', $this->_getValByKey('cpu_type', $this->_profileData))))
++		$this->_is10_3_g5 = true;
++	    if ($this->_is10_3_g5) {
++		$this->message('OSX 10.3.X on G5 detected: disabling IDE disks inventory');
++		exec('/usr/sbin/system_profiler -xml SPNetworkDataType SPPCIDataType SPModemDataType SPMemoryDataType SPUSBDataType SPSCSIDataType SPParallelSCSIDataType SPParallelATADataType SPSerialATADataType SPFireWireDataType SPHardwareDataType SPSoftwareDataType SPNetworkDataType SPApplicationsDataType SPDisplaysDataType SPPrintersDataType', $a_output, $s_error);
++	    } else {
++		exec('/usr/sbin/system_profiler -xml SPNetworkDataType SPPCIDataType SPModemDataType SPMemoryDataType SPUSBDataType SPSCSIDataType SPParallelSCSIDataType SPIDEDataType SPParallelATADataType SPSerialATADataType SPFireWireDataType SPHardwareDataType SPSoftwareDataType SPNetworkDataType SPApplicationsDataType SPDisplaysDataType SPPrintersDataType', $a_output, $s_error);
++	    }
+             $this->_profileData = implode("\n", $a_output);
+             print $this->_profileData;
+         }
+@@ -1236,7 +1253,10 @@
+              // This should be nonfatal, so just return
+              $this->message("No " . $in_nodeName . " present.", 'info');
+              return '';
+-	   }
++	   } else if (($this->_is10_3_g5) && ($in_nodeName == "SPIDEDataType")) {
++	     $this->message("No " . $in_nodeName . " present.", 'info');
++             return '';
++           }
+ 	   else {
+              $this->message("Could not find $in_nodeName in system_profiler XML.  Corrupted output?", 'error');
+              die();
