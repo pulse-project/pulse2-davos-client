@@ -24,7 +24,7 @@ topdir = $(abspath ../..)
 
 # dmidecode tool
 extra_bin = $(extra_srcdir)/dmidecode
-extra_version = 2.12
+extra_version = 3.0
 extra_archive = dmidecode-$(extra_version).tar.gz
 extra_uri = http://download.savannah.gnu.org/releases/dmidecode/$(extra_archive)
 
