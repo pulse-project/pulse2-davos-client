@@ -37,7 +37,7 @@ $(extra_bin): $(extra_srcdir)/Makefile
 
 $(extra_srcdir)/Makefile:
 	$(MAKE) $(extra_srcdir)
-	cd $(extra_srcdir) && ./configure
+	cd $(extra_srcdir) && sh makeconf.sh && ./configure
 
 install-local:
 	mkdir -p $(DESTDIR)$(postinstdir)/bin
