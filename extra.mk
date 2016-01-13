@@ -38,6 +38,8 @@ extract = $(shell \
 	      echo 'unzip -d'; \
 	    elif test "$$mime" = "application/x-gzip"; then \
 	      echo 'tar zxCf'; \
+	    elif test "$$mime" = "application/gzip"; then \
+	      echo 'tar zxCf'; \
 	    elif test "$$mime" = "application/x-bzip2"; then \
 	      echo 'tar jxCf'; \
 	    elif test "$$mime" = "application/x-xz"; then \
