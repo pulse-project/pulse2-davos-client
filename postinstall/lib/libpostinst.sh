@@ -232,7 +232,7 @@ MountSystem ()
   for num in `seq 1 ${partnumber}`; do
     Mount ${num}
     # Does it looks like being a Windows ?
-    if [ -d /mnt/WINDOWS ]; then
+    if [ -d /mnt/Windows ]; then
       echo "*** INFO: WINDOWS found on partition number ${num}"
       return 0
     # Or some Unix disk ?
