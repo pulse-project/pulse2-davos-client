@@ -23,9 +23,10 @@
 topdir = $(abspath ../..)
 
 extra_bin = $(extra_srcdir)/util/fusermount
-extra_version = 2.9.1
+extra_version = 2.9.5
+extra_version2 = 2_9_5
 extra_archive = fuse-$(extra_version).tar.gz
-extra_uri = http://downloads.sourceforge.net/project/fuse/fuse-2.X/$(extra_version)/$(extra_archive)
+extra_uri = https://github.com/libfuse/libfuse/releases/download/fuse_$(extra_version2)/$(extra_archive)
 
 include $(topdir)/common.mk
 include $(topdir)/extra.mk
