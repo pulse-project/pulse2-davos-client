@@ -25,20 +25,6 @@
 # NTFS / VFAT Mounting
 #
 
-# Time to load fuse kids...
-grep -q '^fuse' /proc/modules || insmod /opt/lib/modules/fuse.ko
-
-# And Linux FS drivers
-grep -q '^mbcache' /proc/modules || insmod /opt/lib/modules/mbcache.ko
-grep -q '^jbd' /proc/modules || insmod /opt/lib/modules/jbd.ko
-grep -q '^jbd2' /proc/modules || insmod /opt/lib/modules/jbd2.ko
-grep -q '^exportfs' /proc/modules || insmod /opt/lib/modules/exportfs.ko
-grep -q '^ext2' /proc/modules || insmod /opt/lib/modules/ext2.ko
-grep -q '^ext3' /proc/modules || insmod /opt/lib/modules/ext3.ko
-grep -q '^ext4' /proc/modules || insmod /opt/lib/modules/ext4.ko
-grep -q '^reiserfs' /proc/modules || insmod /opt/lib/modules/reiserfs.ko
-grep -q '^xfs' /proc/modules || insmod /opt/lib/modules/xfs.ko
-
 device=${1}
 
 # Is there a parameter ?
