@@ -43,7 +43,7 @@ class imageSaver(object):
         os.environ['CLMODE'] = 'SAVE_IMAGE'
 
         # Start the image saver
-        error_code = subprocess.call('yes 2>/dev/null|/usr/sbin/ocs-sr -nogui -q2 -c -j2 -z0 -i 20000000 -sc -p true savedisk %s sda 1>/dev/null' % self.image_uuid, shell=True)
+        error_code = subprocess.call('yes 2>/dev/null|/usr/sbin/ocs-sr -nogui -q2 -c -j2 -z1p -i 100 -sc -p true savedisk %s sda 1>/dev/null' % self.image_uuid, shell=True)
 
         if error_code != 0:
             self.logger.warning('An error was encountered while creating image, check the log for more details.')
