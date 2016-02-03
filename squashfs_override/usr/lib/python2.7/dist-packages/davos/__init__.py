@@ -140,6 +140,7 @@ class davosManager(object):
         # Setting env and machine hostname (for inventory)
         os.environ['HOSTNAME'] = self.hostname
         self.runInShell('hostname ' + self.hostname)
+        self.runInShell('sed -i "s/debian/' + self.hostname + '/" /etc/hosts')
 
         self.logger.info('Got hostname: %s', self.hostname)
 
