@@ -43,3 +43,4 @@ install-local:
 	mkdir -p $(DESTDIR)$(postinstdir)/linuxutils
 	cp -a linuxutils $(DESTDIR)$(postinstdir)/
 	chmod 0755 $(DESTDIR)$(postinstdir)/macutils/pulse2-inventory-agent/install.sh
+	mkdir -p $(DESTDIR)$(postinstdir)/sysprep/drivers
