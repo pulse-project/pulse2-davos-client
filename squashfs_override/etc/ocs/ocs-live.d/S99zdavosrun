@@ -1,8 +1,0 @@
-#!/bin/bash
-# debug mode
-#bash
-#/usr/sbin/davos
-#/etc/init.d/ssh start
-#echo "user:user" |chpasswd -m
-exit 0
-
