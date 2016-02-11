@@ -19,13 +19,6 @@ mount -t proc none ./proc
 cp /etc/resolv.conf ./etc/resolv.conf
 chroot . bash -c 'apt-get update && apt-get -y install python-minimal libpython-stdlib fusioninventory-agent dos2unix && exit'
 
-if [ -n $DEBUG ]; then
-    # Chroot bash for debug mode
-    #chroot . bash
-    # Installing debug packages
-    chroot . bash -c 'apt-get -y install git && exit'
-fi
-
 rm -f ./etc/resolv.conf
 umount ./proc
 
