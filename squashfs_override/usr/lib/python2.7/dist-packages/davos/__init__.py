@@ -54,7 +54,7 @@ class davosManager(object):
 
     def initLogger(self):
         self.logger = logging.getLogger('davos')
-        self.log_level = level = logging.DEBUG #logging.INFO
+        self.log_level = level = logging.INFO #logging.DEBUG
 
         # Init logger
 
@@ -159,7 +159,7 @@ class davosManager(object):
         if not os.path.exists(local_dir):
             os.makedirs(local_dir)
         if self.isEmptyDir(local_dir):
-            self.logger.debug('Mounting %s NFS Share', local_dir)
+            self.logger.info('Mounting %s NFS Share', local_dir)
             o, e, ec = self.runInShell('mount %s:%s %s' % (self.server, remote_dir, local_dir))
             if ec != 0:
                 self.logger.error('Cannot mount %s Share', local_dir)
@@ -172,7 +172,7 @@ class davosManager(object):
         if not os.path.exists(local_dir):
             os.mkdir(local_dir)
         if self.isEmptyDir(local_dir):
-            self.logger.debug('Mounting %s NFS Share', local_dir)
+            self.logger.info('Mounting %s NFS Share', local_dir)
             o, e, ec = self.runInShell('mount %s:%s %s' % (self.server, remote_dir, local_dir))
             if ec != 0:
                 self.logger.error('Cannot mount %s Share', local_dir)

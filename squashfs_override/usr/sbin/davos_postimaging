@@ -18,5 +18,6 @@ for z in $postinst_dir/*; do
   bash $z 2>/tmp/postinst.$x.log
   x=$(( x + 1 ))
   echo "XXX"
+sleep 2
 done|dialog --backtitle "Pulse imaging client" --title "Step 2: Post-Imaging" --gauge "Please wait" 20 70 0 1>&2
 exit 0
