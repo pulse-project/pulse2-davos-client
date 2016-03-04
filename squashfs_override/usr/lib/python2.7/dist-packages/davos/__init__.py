@@ -111,26 +111,6 @@ class davosManager(object):
         return os.listdir(path) == []
 
 
-    # To be removed
-    def initRevoStuff(self):
-        # Compatibility function to assure the transition
-        # this function write some files to assure the correct
-        # working of revotools
-        
-        self.logger.debug('Writing env vars and files for revo compatibility')
-
-        os.environ['SHORTMAC'] = self.mac.replace(':', '')
-        os.environ['imaging_server'] = self.server
-        os.environ['IPSERVER'] = self.server
-        os.environ['MAC'] = self.mac
-        os.environ['HOSTNAME'] = "UNKNOWN"
-
-        # Write some files
-        open('/etc/eth', 'w').write(self.iface)
-        open('/etc/mac', 'w').write(self.mac)
-        open('/etc/netinfo.sh', 'w').write('Next_server=' + self.server)
-
-
     def getHostInfo(self):
         self.logger.info('Asking for hostinfo')
 

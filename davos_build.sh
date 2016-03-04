@@ -2,9 +2,9 @@
 set -e
 
 # Edit these line to update clonezilla version
-version="20160105-wily"
+version="20160210-wily"
 arch="i386"
-base_url="http://heanet.dl.sourceforge.net/project/clonezilla/clonezilla_live_alternative_testing"
+base_url="http://heanet.dl.sourceforge.net/project/clonezilla/clonezilla_live_alternative"
 
 # =============================================================
 # Don't edit anything below these lines 
