@@ -8,8 +8,7 @@ Homepage: http://pulse2.mandriva.org
 
 Package: pulse2-davos-client
 Architecture: all
-Depends: ${misc:Depends}, pulse2-package-server(>= 2.1)
-#Conflicts: pulse2-imaging-client
+Depends: ${misc:Depends}
 Description: Pulse 2 Davos imaging client
  Pulse 2 Davos imaging client based on Clonezilla permit to create
  and restore disk images with advanced mastering functionnalities.
