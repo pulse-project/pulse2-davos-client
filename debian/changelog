@@ -1,29 +1,97 @@
-pulse2-davos-client (0.7) unstable; urgency=low
+pulse2-davos-client (0.25)  unstable; urgency=low
 
-  * Test-build
+  * Fix depends
+
+ -- root <root@davos32> Mon, 29 Feb 2016 00:59:02 +0100
+
+pulse2-davos-client (0.24)  unstable; urgency=low
+
+  * New version
+
+ -- root <root@davos32> Mon, 29 Feb 2016 00:59:02 +0100
+
+pulse2-davos-client (0.23)  unstable; urgency=low
+
+  * Fix detection of partitions
+
+ -- root <root@davos32> Mon, 29 Feb 2016 00:59:02 +0100
+
+pulse2-davos-client (0.22)  unstable; urgency=low
+
+  * Fix postinst script
+
+ -- root <root@davos32> Wed, 11 Feb 2016 00:59:02 +0100
+
+pulse2-davos-client (0.21)  unstable; urgency=low
+
+  * Fix error when using chown
+
+ -- root <root@davos32> Wed, 11 Feb 2016 00:59:02 +0100
+
+pulse2-davos-client (0.20)  unstable; urgency=low
+
+  * Fix error when adding user
+
+ -- root <root@davos32> Wed, 11 Feb 2016 00:59:02 +0100
+
+
+pulse2-davos-client (0.19)  unstable; urgency=low
+
+  * Remove set -e from postinst
+
+ -- root <root@davos32> Wed, 10 Feb 2016 00:59:02 +0100
+
+pulse2-davos-client (0.18)  unstable; urgency=low
+
+  * Cleanup of old revo and various other useless files
+
+ -- root <root@davos32> Wed, 10 Feb 2016 00:59:02 +0100
+
+pulse2-davos-client (0.17)  unstable; urgency=low
+
+  * Only create user when needed
+
+ -- root <root@davos32> Mon, 8 Feb 2016 00:59:02 +0100
+
+pulse2-davos-client (0.16)  unstable; urgency=low
+
+  * Really apply spo changes
+
+ -- root <root@davos32> Mon, 8 Feb 2016 00:59:02 +0100
+
+pulse2-davos-client (0.15)  unstable; urgency=low
+
+  * Insert hostname in /etc/hosts file to speedup loading of davos
+
+ -- root <root@davos32> Mon, 8 Feb 2016 00:59:02 +0100
+
+pulse2-davos-client (0.14)  unstable; urgency=low
+
+  * Fix folder permissions in postinst
+
+ -- root <root@davos32> Mon, 8 Feb 2016 00:59:02 +0100
+
+pulse2-davos-client (0.13)  unstable; urgency=low
+
+  * Fix folder permissions in postinst
+
+ -- root <root@davos32> Mon, 8 Feb 2016 00:59:02 +0100
+
+pulse2-davos-client (0.12)  unstable; urgency=low
+
+  * Create sysprep/drivers folder
+  * Create drivers user
+
+ -- root <root@davos32> Mon, 8 Feb 2016 00:59:02 +0100
+
+pulse2-davos-client (0.11) unstable; urgency=medium
+
+  * Fix squashfs
+
+ -- root <root@davos32>  Sat, 23 Jan 2016 00:59:02 +0100
+
+pulse2-davos-client (0.10) unstable; urgency=low
+
+  * Add several fixes
 
  -- root <root@bender.metz.mandriva.com>  Wed, 04 Mar 2015 12:21:00 +0100
-
-pulse2-davos-client (0.5) unstable; urgency=low
-
-  * Test-build
-
- -- root <root@bender.metz.mandriva.com>  Tue, 03 Mar 2015 18:17:21 +0100
-
-pulse2-davos-client (0.3) unstable; urgency=low
-
-  * Test-build
-
- -- root <root@bender.metz.mandriva.com>  Tue, 03 Mar 2015 15:04:21 +0100
-
-pulse2-davos-client (0.2) unstable; urgency=low
-
-  * Test-build
-
- -- root <root@bender.metz.mandriva.com>  Mon, 02 Mar 2015 16:52:41 +0100
-
-pulse2-davos-client (0.1) unstable; urgency=low
-
-  * Initial release.
-
- -- Ishak BELAHMAR <ibelahmar@mandriva.com>  Fri, 13 Feb 2015 09:13:59 +0100
