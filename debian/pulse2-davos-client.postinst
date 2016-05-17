@@ -1,0 +1,16 @@
+#!/bin/sh
+set -e
+
+USER=drivers
+
+if [ $1 = "configure" ]; then
+
+        if ! getent passwd $USER >/dev/null; then
+                adduser --no-create-home --system $USER
+        fi
+        chown -R $USER:root /var/lib/pulse2/imaging/postinst/sysprep/drivers
+fi
+
+#DEBHELPER#
+
+exit 0
