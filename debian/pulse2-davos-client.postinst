@@ -8,6 +8,7 @@ if [ $1 = "configure" ]; then
         if ! getent passwd $USER >/dev/null; then
                 adduser --no-create-home --system $USER
         fi
+	mkdir -p /var/lib/pulse2/imaging/postinst/sysprep/drivers
         chown -R $USER:root /var/lib/pulse2/imaging/postinst/sysprep/drivers
 fi
 
