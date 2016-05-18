@@ -1,3 +1,14 @@
+pulse2-davos-client (0.27)  unstable; urgency=low
+
+  * Create missing folder
+
+ -- Nicolas Lécureuil <nicolas.lecureuil@siveo.net> Mon, 29 Feb 2016 00:59:02 +0100
+pulse2-davos-client (0.26)  unstable; urgency=low
+
+  * Use new PXELinux
+
+ -- Nicolas Lécureuil <nicolas.lecureuil@siveo.net> Mon, 29 Feb 2016 00:59:02 +0100
+
 pulse2-davos-client (0.25)  unstable; urgency=low
 
   * Fix depends
