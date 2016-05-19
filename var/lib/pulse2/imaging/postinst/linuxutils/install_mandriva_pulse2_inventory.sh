@@ -1,6 +1,6 @@
 #!/bin/bash
 
-OCS_SERVER="pulse2-fai.metz.mandriva.com:9999"
+OCS_SERVER="<pulse-inventory-server-address>:9999"
 
 ocs_debian() {
     # Ubuntu ?
