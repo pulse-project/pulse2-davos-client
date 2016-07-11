@@ -1,3 +1,9 @@
+pulse2-davos-client (0.29)  unstable; urgency=low
+
+  *  Make use of davos options for nfs shares to be mounted ( 0afb978937a6676819221bfde70747be226ee4bc )
+
+ -- Nicolas Lécureuil <nicolas.lecureuil@siveo.net> Mon, 29 Feb 2016 00:59:02 +0100
+
 pulse2-davos-client (0.27)  unstable; urgency=low
 
   * Create missing folder
