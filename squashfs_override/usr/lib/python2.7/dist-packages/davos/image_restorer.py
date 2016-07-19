@@ -94,9 +94,9 @@ class imageRestorer(object):
 
         # Start the image restore
         if self.mode == 'multicast':
-            subprocess.call('yes 2>/dev/null| /usr/sbin/ocs-sr -icrc -icds -nogui -g auto -e1 auto -e2 -c -r -j2 -p true --mcast-port 2232 multicast_restoredisk %s sda 1>/dev/null' % self.image_uuid, shell=True)
+            subprocess.call('yes 2>/dev/null| /usr/sbin/ocs-sr %s --mcast-port 2232 multicast_restoredisk %s sda 1>/dev/null' % (self.manager.clonezilla_params['clonezilla_restorer_params'], self.image_uuid), shell=True)
         else:
-            subprocess.call('yes 2>/dev/null| /usr/sbin/ocs-sr -icrc -icds -nogui -g auto -e1 auto -e2 -c -r -j2 -p true restoredisk %s sda 1>/dev/null' % self.image_uuid, shell=True)
+            subprocess.call('yes 2>/dev/null| /usr/sbin/ocs-sr %s restoredisk %s sda 1>/dev/null' % (self.manager.clonezilla_params['clonezilla_restorer_params'], self.image_uuid), shell=True)
 
         # Save image JSON and LOG
         current_ts = time.strftime("%Y-%m-%d %H:%M:%S")

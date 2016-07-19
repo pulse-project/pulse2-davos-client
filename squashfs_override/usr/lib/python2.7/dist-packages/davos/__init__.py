@@ -39,15 +39,31 @@ class davosManager(object):
         self.getKernelParams()
         self.server = self.kernel_params['fetch'].split('/')[2]
         self.mac = self.kernel_params['mac']
-        self.nfs_server = self.kernel_params['nfs_server']
-        self.nfs_share_masters = self.kernel_params['nfs_share_masters']
-        self.nfs_share_postinst = self.kernel_params['nfs_share_postinst']
+
+        # Get nfs parameters if set. If not, use default values
+        try:
+            self.nfs_server = self.kernel_params['nfs_server']
+        except KeyError:
+            self.nfs_server = self.server
+
+        try:
+            self.nfs_share_masters = self.kernel_params['nfs_share_masters']
+        except KeyError:
+            self.nfs_share_masters = '/var/lib/pulse2/imaging/masters/'
+
+        try:
+            self.nfs_share_postinst = self.kernel_params['nfs_share_postinst']
+        except KeyError:
+            self.nfs_share_postinst = '/var/lib/pulse2/imaging/postinst/'
 
         # Init XMLRPC Client
         self.rpc = pkgServerProxy(self.server)
 
         # Hostname and uuid
         self.getHostInfo()
+
+        # Clonezilla parameters
+        self.getClonezillaParams()
 
         # Mount NFS Shares
         self.mountNFSShares()
@@ -134,41 +150,37 @@ class davosManager(object):
         self.logger.info('Got entity: %s', self.host_entity)
 
 
+    def getClonezillaParams(self):
+        """
+        get Clonezilla parameters for the machine
+        """
+        self.logger.info('Asking for Clonezilla parameters')
+
+        self.clonezilla_params = self.rpc.imaging_api.getClonezillaParamsForTarget(self.host_uuid)
+
+
     def mountNFSShares(self):
         # Server address
-        if self.nfs_server:
-            server = self.nfs_server
-        else:
-            server = self.server
+        server = self.nfs_server
 
         # Masters Share
         local_dir = '/imaging_server/masters/'
-        if self.nfs_share_masters:
-            remote_dir = self.nfs_share_masters
-        else:
-            remote_dir = '/var/lib/pulse2/imaging/masters/'
-
         if not os.path.exists(local_dir):
             os.makedirs(local_dir)
         if self.isEmptyDir(local_dir):
             self.logger.info('Mounting %s NFS Share', local_dir)
-            o, e, ec = self.runInShell('mount %s:%s %s' % (server, remote_dir, local_dir))
+            o, e, ec = self.runInShell('mount %s:%s %s' % (server, self.nfs_share_masters, local_dir))
             if ec != 0:
                 self.logger.error('Cannot mount %s Share', local_dir)
                 self.logger.error('Output: %s', e)
 
         # Postinst share
         local_dir = '/opt/'
-        if self.nfs_share_postinst:
-            remote_dir = self.nfs_share_postinst
-        else:
-            remote_dir = '/var/lib/pulse2/imaging/postinst/'
-
         if not os.path.exists(local_dir):
             os.mkdir(local_dir)
         if self.isEmptyDir(local_dir):
             self.logger.info('Mounting %s NFS Share', local_dir)
-            o, e, ec = self.runInShell('mount %s:%s %s' % (server, remote_dir, local_dir))
+            o, e, ec = self.runInShell('mount %s:%s %s' % (server, self.nfs_share_postinst, local_dir))
             if ec != 0:
                 self.logger.error('Cannot mount %s Share', local_dir)
                 self.logger.error('Output: %s', e)
