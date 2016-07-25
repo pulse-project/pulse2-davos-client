@@ -239,11 +239,24 @@ if MountSystem; then
     cp /opt/winutils/pulse2-win32-agents-pack-noprompt.exe /mnt
     # Create an install script
     cat << EOF > "/mnt/mandriva_pulse2_agents.bat"
-"%SystemDrive%\pulse2-win32-agents-pack-noprompt.exe"
-del "%SystemDrive%\pulse2-win32-agents-pack-noprompt.exe"
-IF EXIST "%SystemDrive%\Program Files\Mandriva\OpenSSH\bin\dellater.exe" "%SystemDrive%\Program Files\Mandriva\OpenSSH\bin\dellater.exe" "%SystemRoot%\system32\GroupPolicy\Machine\Scripts\scripts.ini"
-IF EXIST "%SystemDrive%\Program Files (x86)\Mandriva\OpenSSH\bin\dellater.exe" "%SystemDrive%\Program Files (x86)\Mandriva\OpenSSH\bin\dellater.exe" "%SystemRoot%\system32\GroupPolicy\Machine\Scripts\scripts.ini"
-del "%~f0"
+@echo off
+SC QUERY sshd > NULL
+IF ERRORLEVEL 1060 (
+	ECHO “Mandriva ssh service is not present”
+	IF EXIST "%SystemDrive%\Program Files\Mandriva\OpenSSH\uninst.exe" /S
+	IF EXIST "%SystemDrive%\Program Files (x86)\Mandriva\OpenSSH\uninst.exe" /S
+	timeout 10
+	NET USER sshd /DEL
+	NET USER sshd_server /DEL
+	ECHO “Mandriva ssh agent installation”
+	"%SystemDrive%\pulse2-win32-agents-pack-noprompt.exe"
+) ELSE (
+	ECHO “Mandriva ssh service is running”
+	DEL "%SystemDrive%\pulse2-win32-agents-pack-noprompt.exe"
+	IF EXIST "%SystemDrive%\Program Files\Mandriva\OpenSSH\bin\dellater.exe" "%SystemDrive%\Program Files\Mandriva\OpenSSH\bin\dellater.exe" "%SystemRoot%\system32\GroupPolicy\Machine\Scripts\scripts.ini"
+	IF EXIST "%SystemDrive%\Program Files (x86)\Mandriva\OpenSSH\bin\dellater.exe" "%SystemDrive%\Program Files (x86)\Mandriva\OpenSSH\bin\dellater.exe" "%SystemRoot%\system32\GroupPolicy\Machine\Scripts\scripts.ini"
+	del "%~f0"
+)
 EOF
     unix2dos /mnt/mandriva_pulse2_agents.bat
     # Call the Local GPO helper
@@ -349,24 +362,35 @@ if [[ -n `find /mnt -maxdepth 1 -type d -iname windows` ]]; then
   if [ -f "${SCRIPTINIPATH}" ]; then
     # UTF-16 stuff, can't be used...
     iconv -f UTF-16 -t UTF-8 "${SCRIPTINIPATH}" > "${SCRIPTINIPATH}.utf8"
-    # Get current script number
-    SCRIPTNUMBER=`grep '^[0-9]\+CmdLine' "${SCRIPTINIPATH}.utf8" | tail -n 1 | sed 's!^\([0-9]\+\).*$!\1!'`
-    if echo "${SCRIPTNUMBER}" | grep -q "^[0-9]\+" ;then
-      # Increase by one
-      NEWSCRIPTNUMBER=$((${SCRIPTNUMBER}+1))
-      echo '' >> "${SCRIPTINIPATH}.utf8"
-      echo "${NEWSCRIPTNUMBER}CmdLine=${SCRIPTNAME}" >> "${SCRIPTINIPATH}.utf8"
-      echo "${NEWSCRIPTNUMBER}Parameters=" >> "${SCRIPTINIPATH}.utf8"
-      # Back to UTF-16
-      iconv -f UTF-8 -t UTF-16 "${SCRIPTINIPATH}.utf8" > "${SCRIPTINIPATH}"
-      rm "${SCRIPTINIPATH}.utf8"
-      echo "*** INFO: ${SCRIPTNAME} added as startupscript number ${NEWSCRIPTNUMBER}"
-      UpdateGroupPolicyGptIni
-    else
-      # Uh ?
-      echo "*** ERROR: scripts.ini already exists but I haven't been able to figure out current last script number"
-      return 1
-    fi
+
+    grep -q mandriva_pulse2_agents.bat ${SCRIPTINIPATH}.utf8
+    if [ ${?} -ne 0 ]; then
+
+	    # Get current script number
+	    SCRIPTNUMBER=`grep '^[0-9]\+CmdLine' "${SCRIPTINIPATH}.utf8" | tail -n 1 | sed 's!^\([0-9]\+\).*$!\1!'`
+	    if echo "${SCRIPTNUMBER}" | grep -q "^[0-9]\+" ;then
+	      # Increase by one
+	      NEWSCRIPTNUMBER=$((${SCRIPTNUMBER}+1))
+	      echo '' >> "${SCRIPTINIPATH}.utf8"
+	      echo "${NEWSCRIPTNUMBER}CmdLine=${SCRIPTNAME}" >> "${SCRIPTINIPATH}.utf8"
+	      echo "${NEWSCRIPTNUMBER}Parameters=" >> "${SCRIPTINIPATH}.utf8"
+	      # Back to UTF-16
+	      iconv -f UTF-8 -t UTF-16 "${SCRIPTINIPATH}.utf8" > "${SCRIPTINIPATH}"
+	      rm "${SCRIPTINIPATH}.utf8"
+	      echo "*** INFO: ${SCRIPTNAME} added as startupscript number ${NEWSCRIPTNUMBER}"
+	      UpdateGroupPolicyGptIni
+	    else
+	      # Uh ?
+	      echo "*** ERROR: scripts.ini already exists but I haven't been able to figure out current last script number"
+	      return 1
+	    fi
+     else
+           echo "*** scripts.ini already exist"
+           # Back to UTF-16
+           iconv -f UTF-8 -t UTF-16 "${SCRIPTINIPATH}.utf8" > "${SCRIPTINIPATH}"
+           rm "${SCRIPTINIPATH}.utf8"
+
+     fi
   else
     echo "*** INFO: scripts.ini doens't exist yet. Creating a new one"
     mkdir -p $WINSYSDIR/GroupPolicy/Machine/Scripts
