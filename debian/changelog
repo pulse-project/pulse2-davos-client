@@ -1,3 +1,15 @@
+pulse2-davos-client (0.31)  unstable; urgency=low
+
+  * Regenerate squashfs
+
+ -- Nicolas Lécureuil <nicolas.lecureuil@siveo.net> Mon, 29 Feb 2016 00:59:02 +0100
+
+pulse2-davos-client (0.30)  unstable; urgency=low
+
+  * Make use of Clonezilla options set in Pulse + Fix for NFS parameters ( e4f57bcfede36f50d7902263f4160f55236fc23c )
+
+ -- Nicolas Lécureuil <nicolas.lecureuil@siveo.net> Mon, 29 Feb 2016 00:59:02 +0100
+
 pulse2-davos-client (0.29)  unstable; urgency=low
 
   *  Make use of davos options for nfs shares to be mounted ( 0afb978937a6676819221bfde70747be226ee4bc )
