@@ -111,7 +111,7 @@ class imageRestorer(object):
 
 
         # Run post-imaging convergence
-        self.apply_convergence()
+        # self.apply_convergence()
 
     def setlibpostinstVars(self):
         # Setting some env vars needed by libpostinst
@@ -237,5 +237,3 @@ class imageRestorer(object):
         regfile = '/usr/lib/python2.7/dist-packages/davos/o.reg'
 
         self.manager.runInShell('reged -I -C %(reghive)s PRE %(regfile)s' % locals())
-
-
