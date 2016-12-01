@@ -2,7 +2,7 @@
 set -e
 
 # Edit these line to update clonezilla version
-version="20160210-wily"
+version="20161121-yakkety"
 arch="i386"
 base_url="http://heanet.dl.sourceforge.net/project/clonezilla/clonezilla_live_alternative"
 
