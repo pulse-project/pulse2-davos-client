@@ -43,12 +43,15 @@ class imageSaver(object):
         os.environ['CLMODE'] = 'SAVE_IMAGE'
 
         # Start the image saver
-        error_code = subprocess.call('yes 2>/dev/null|/usr/sbin/ocs-sr %s savedisk %s sda 1>/dev/null' % (self.manager.clonezilla_params['clonezilla_saver_params'], self.image_uuid), shell=True)
-
-        if error_code != 0:
-            self.logger.warning('An error was encountered while creating image, check the log for more details.')
+        error_code = subprocess.call('yes 2>/dev/null|/usr/sbin/ocs-sr %s savedisk %s sda &>/var/log/davos_saver.log' % (self.manager.clonezilla_params['clonezilla_saver_params'], self.image_uuid), shell=True)
 
         image_dir = os.path.join('/home/partimag/', self.image_uuid) + '/'
+
+        if error_code != 0:
+            self.logger.warning('An error was encountered while creating image, check davos_saver.log for more details.')
+            saver_log_path = os.path.join(image_dir, 'davos_saver.log')
+            open(saver_log_path, 'w').write(open('/var/log/davos_saver.log', 'r').read())
+            time.sleep(15)
 
         # Save image JSON and LOG
         info = {}
