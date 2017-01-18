@@ -94,9 +94,9 @@ class imageRestorer(object):
 
         # Start the image restore
         if self.mode == 'multicast':
-            error_code = subprocess.call('yes 2>/dev/null| /usr/sbin/ocs-sr %s --mcast-port 2232 multicast_restoredisk %s sda &>/var/log/davos_restorer.log' % (self.manager.clonezilla_params['clonezilla_restorer_params'], self.image_uuid), shell=True)
+            error_code = subprocess.call('yes 2>/dev/null| /usr/sbin/ocs-sr %s --mcast-port 2232 multicast_restoredisk %s sda 2>&1 1>/dev/null | tee /var/log/davos_restorer.log' % (self.manager.clonezilla_params['clonezilla_restorer_params'], self.image_uuid), shell=True)
         else:
-            error_code = subprocess.call('yes 2>/dev/null| /usr/sbin/ocs-sr %s restoredisk %s sda &>/var/log/davos_restorer.log' % (self.manager.clonezilla_params['clonezilla_restorer_params'], self.image_uuid), shell=True)
+            error_code = subprocess.call('yes 2>/dev/null| /usr/sbin/ocs-sr %s restoredisk %s sda 2>&1 1>/dev/null | tee /var/log/davos_restorer.log' % (self.manager.clonezilla_params['clonezilla_restorer_params'], self.image_uuid), shell=True)
 
         # Save image JSON and LOG
         current_ts = time.strftime("%Y%m%d%H%M%S")

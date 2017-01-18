@@ -43,7 +43,7 @@ class imageSaver(object):
         os.environ['CLMODE'] = 'SAVE_IMAGE'
 
         # Start the image saver
-        error_code = subprocess.call('yes 2>/dev/null|/usr/sbin/ocs-sr %s savedisk %s sda &>/var/log/davos_saver.log' % (self.manager.clonezilla_params['clonezilla_saver_params'], self.image_uuid), shell=True)
+        error_code = subprocess.call('yes 2>/dev/null|/usr/sbin/ocs-sr %s savedisk %s sda 2>&1 1>/dev/null | tee /var/log/davos_saver.log' % (self.manager.clonezilla_params['clonezilla_saver_params'], self.image_uuid), shell=True)
 
         image_dir = os.path.join('/home/partimag/', self.image_uuid) + '/'
 
