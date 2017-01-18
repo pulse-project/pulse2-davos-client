@@ -1,3 +1,9 @@
+pulse2-davos-client (0.44)  unstable; urgency=low
+
+   * Redirect only stderr to file ( 2e418c231239f77751638febb6fc9c07a780daa0 )
+
+ -- Nicolas Lécureuil <nicolas.lecureuil@siveo.net> Wed, 18 Jan 2017 00:59:02 +0100
+
 pulse2-davos-client (0.43)  unstable; urgency=low
 
   * Save log files in case of errors during restore ( ca170c27a7403fb1ba767abefdd290d9ff4dd7aa )
