@@ -1,3 +1,33 @@
+pulse2-davos-client (0.43)  unstable; urgency=low
+
+  * Save log files in case of errors during restore ( ca170c27a7403fb1ba767abefdd290d9ff4dd7aa )
+
+ -- Nicolas Lécureuil <nicolas.lecureuil@siveo.net> Wed, 18 Jan 2017 00:59:02 +0100
+
+pulse2-davos-client (0.42)  unstable; urgency=low
+
+  * Save log file in case of errors ( 69d15ca1428badb851604e61a96e20b05c458549 )
+
+ -- Nicolas Lécureuil <nicolas.lecureuil@siveo.net> Mon, 29 Feb 2016 00:59:02 +0100
+
+pulse2-davos-client (0.41)  unstable; urgency=low
+
+  * Fix MULTICAST_ALL_ADDR value
+
+ -- Nicolas Lécureuil <nicolas.lecureuil@siveo.net> Mon, 29 Feb 2016 00:59:02 +0100
+
+pulse2-davos-client (0.40)  unstable; urgency=low
+
+  * Rebuild to fix missing python
+
+ -- Nicolas Lécureuil <nicolas.lecureuil@siveo.net> Mon, 29 Feb 2016 00:59:02 +0100
+
+pulse2-davos-client (0.34)  unstable; urgency=low
+
+  * Update clonezilla
+
+ -- Nicolas Lécureuil <nicolas.lecureuil@siveo.net> Mon, 29 Feb 2016 00:59:02 +0100
+
 pulse2-davos-client (0.31)  unstable; urgency=low
 
   * Regenerate squashfs
