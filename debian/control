@@ -1,10 +1,10 @@
 Source: pulse2-davos-client
 Section: admin
 Priority: extra
-Maintainer: Ishak BELAHMAR <ibelahmar@mandriva.com>
+Maintainer: Nicolas Lécureuil <nicolas.lecureuil@siveo.net>
 Build-Depends: debhelper (>= 5.0.37.2), python-pyquery(>= 1.2)
 Standards-Version: 3.9.4
-Homepage: http://pulse2.mandriva.org
+Homepage: http://www.siveo.net
 
 Package: pulse2-davos-client
 Architecture: all
