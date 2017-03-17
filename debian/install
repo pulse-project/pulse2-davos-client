@@ -1,3 +1,5 @@
-var/lib/pulse2/imaging/postinst		var/lib/pulse2/imaging/
-var/lib/pulse2/imaging/davos		var/lib/pulse2/imaging/
-var/lib/pulse2/imaging/bootloader	var/lib/pulse2/imaging/
+var/lib/pulse2/imaging/postinst		 var/lib/pulse2/imaging/
+var/lib/pulse2/imaging/davos		 var/lib/pulse2/imaging/
+var/lib/pulse2/imaging/bootloader	 var/lib/pulse2/imaging/
+var/lib/pulse2/imaging/bootloader-uefi64 var/lib/pulse2/imaging/
+var/lib/pulse2/imaging/bootloader-uefi32 var/lib/pulse2/imaging/
