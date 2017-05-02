@@ -1,6 +1,6 @@
 # What is PULSE DAVOS CLIENT?
  
-PULSE DAVOS CLIENT is an network boot client for PULSE IT automation and lifecycle workstation management tool.
+PULSE DAVOS CLIENT is a network boot client for PULSE IT automation and lifecycle workstation management tool.
 
 PULSE DAVOS CLIENT relies on open source technologies like python, c, hdt, clonezilla, and even more.
 
