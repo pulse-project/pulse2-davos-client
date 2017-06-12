@@ -93,12 +93,12 @@ class imageRestorer(object):
         os.environ['CLMODE'] = 'RESTORE_IMAGE'
 
         # Find out the device to restore to
-        if os.path.exists('/dev/sda'):
+        if os.path.exists('/dev/nvme0n1'):
+            self.device = 'nvme0n1'
+        elif os.path.exists('/dev/sda'):
             self.device = 'sda'
         elif os.path.exists('/dev/hda'):
             self.device = 'hda'
-        elif os.path.exists('/dev/nvme0n1'):
-            self.device = 'nvme0n1'
 
         # Start the image restore
         if self.mode == 'multicast':
