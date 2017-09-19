@@ -57,7 +57,7 @@ class imageRestorer(object):
         available_images = self.available_images
         d = Dialog(dialog="dialog")
         choices = [(str(available_images.index(x) + 1), _get_title(x)) for x in available_images]
-        code, tag = d.menu("Select image to restore from:", choices=choices, backtitle="Mandriva Pulse Imaging Client")
+        code, tag = d.menu("Select image to restore from:", choices=choices, backtitle="Pulse Imaging Client")
         if code != 0:
             # Leave (no image selected)
             return False
@@ -70,12 +70,12 @@ class imageRestorer(object):
         # Check if the image exists or not
         if not os.path.isdir('/home/partimag/' + self.image_uuid):
             d = Dialog(dialog="dialog")
-            d.msgbox("Could not find image on server", backtitle="Mandriva Pulse Imaging Client")
+            d.msgbox("Could not find image on server", backtitle="Pulse Imaging Client")
             raise Exception('Could not find image on server')
         # Check if image is compatible (davos)
         if not os.path.isfile('/home/partimag/%s/davosInfo.json' % self.image_uuid):
             d = Dialog(dialog="dialog")
-            d.msgbox("Selected image is not compatible with this backend, please convert this image to the correct format.", backtitle="Mandriva Pulse Imaging Client")
+            d.msgbox("Selected image is not compatible with this backend, please convert this image to the correct format.", backtitle="Pulse Imaging Client")
             raise Exception('Could not find image on server')
 
 
