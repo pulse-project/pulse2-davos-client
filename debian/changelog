@@ -1,3 +1,21 @@
+pulse2-davos-client (0.47)  unstable; urgency=low
+
+   * Update to 20170919-zesty
+
+ -- Nicolas Lécureuil <nicolas.lecureuil@siveo.net> Wed, 18 Jan 2017 00:59:02 +0100
+
+pulse2-davos-client (0.46)  unstable; urgency=low
+
+   * Revert IP in conf
+
+ -- Nicolas Lécureuil <nicolas.lecureuil@siveo.net> Wed, 18 Jan 2017 00:59:02 +0100
+
+pulse2-davos-client (0.45)  unstable; urgency=low
+
+   * Update to 20170829-zesty
+
+ -- Nicolas Lécureuil <nicolas.lecureuil@siveo.net> Wed, 18 Jan 2017 00:59:02 +0100
+
 pulse2-davos-client (0.44)  unstable; urgency=low
 
    * Redirect only stderr to file ( 2e418c231239f77751638febb6fc9c07a780daa0 )

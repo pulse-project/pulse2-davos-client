@@ -2,9 +2,9 @@
 set -e
 
 # Edit these line to update clonezilla version
-version="20161121-yakkety"
+version="20170919-zesty"
 arch="i386"
-base_url="http://heanet.dl.sourceforge.net/project/clonezilla/clonezilla_live_alternative"
+base_url="http://free.nchc.org.tw/clonezilla-live/alternative/testing/"
 
 # =============================================================
 # Don't edit anything below these lines 
@@ -41,8 +41,9 @@ done
 cd build
 
 # Decompressing the squashfs
-unsquashfs filesystem.squashfs && rm filesystem.squashfs
+unsquashfs filesystem.squashfs  && rm filesystem.squashfs
 cd squashfs-root
+#sed 's/MULTICAST_ALL_ADDR="224.0.0.1"/MULTICAST_ALL_ADDR="239.254.1.255"/' -i etc/drbl/drbl-ocs.conf
 
 # Run deploy script to patch the filesystem
 $old_pwd/deploy_filesystem.sh $old_pwd/
