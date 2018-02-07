@@ -2,7 +2,7 @@
 set -e
 
 # Edit these line to update clonezilla version
-version="20170919-zesty"
+version="20180119-artful"
 arch="i386"
 base_url="http://free.nchc.org.tw/clonezilla-live/alternative/testing/"
 
