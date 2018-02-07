@@ -1,3 +1,9 @@
+pulse2-davos-client (0.48)  unstable; urgency=low
+  
+   * Update to 20180119-artful
+
+ -- Nicolas Lécureuil <nicolas.lecureuil@siveo.net> Wed, 07 Feb 2018 00:59:02 +0100
+
 pulse2-davos-client (0.47)  unstable; urgency=low
 
    * Update to 20170919-zesty
