@@ -1,3 +1,9 @@
+pulse2-davos-client (0.48.3)  unstable; urgency=low
+  
+   * Enable ssh by default
+
+ -- Nicolas Lécureuil <nicolas.lecureuil@siveo.net> Tue, 20 Feb 2018 00:59:02 +0100
+
 pulse2-davos-client (0.48)  unstable; urgency=low
   
    * Update to 20180119-artful
