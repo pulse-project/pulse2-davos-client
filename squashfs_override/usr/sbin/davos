@@ -28,8 +28,10 @@ from davos import davosManager
 from davos.image_saver import imageSaver
 from davos.image_restorer import imageRestorer
 from davos.bootservice_launcher import bootserviceLauncher
+from davos.inventory import Inventory
 import sys
 import argparse
+import time
 
 def signal_handler(signum, frame):
     pass
@@ -47,6 +49,7 @@ if __name__ == '__main__':
     parser.add_argument('--restore', dest='action', help='Image restoration mode', action='store_const', const='RESTORE_IMAGE')
     parser.add_argument('--restore-multicast', dest='action', help='Image multicast restoration mode', action='store_const', const='RESTORE_IMAGE_MULTICAST')
     parser.add_argument('--run-bootservice', dest='action', help='Run boot service mode', action='store_const', const='RUN_BOOTSERVICE')
+    parser.add_argument('--register', dest='action', help='Register machine', action='store_const', const='REGISTER')
 
     # Parse input args
     args = parser.parse_args()
@@ -79,6 +82,10 @@ if __name__ == '__main__':
     elif action == 'RUN_BOOTSERVICE':
     	d = bootserviceLauncher(mgr)
     	d.start()
+    elif action == 'REGISTER':
+        d = Inventory(mgr)
+        # Wait for machine registration
+        time.sleep(int(mgr.timereboot))
     else:
         print 'Unknown action, leaving'
         #mgr.runInShell('reboot')

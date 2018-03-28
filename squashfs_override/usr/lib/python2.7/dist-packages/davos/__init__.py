@@ -23,6 +23,7 @@ import os, subprocess
 import logging
 from log import ColoredFormatter
 from davos.xmlrpc_client import pkgServerProxy
+import re
 
 class davosManager(object):
 
@@ -38,7 +39,14 @@ class davosManager(object):
         # Read Kernel Params
         self.getKernelParams()
         self.server = self.kernel_params['fetch'].split('/')[2]
-        self.mac = self.kernel_params['mac']
+
+        self.action = self.kernel_params['davos_action']
+
+        # Get mac address if set. If not, it is a new machine
+        try:
+            self.mac = self.kernel_params['mac']
+        except KeyError:
+            pass
 
         # Get nfs parameters if set. If not, use default values
         try:
@@ -56,20 +64,36 @@ class davosManager(object):
         except KeyError:
             self.nfs_share_postinst = '/var/lib/pulse2/imaging/postinst/'
 
+        try:
+            self.dump_path = self.kernel_params['dump_path']
+        except KeyError:
+            self.dump_path = 'inventories'
+
+        try:
+            self.timereboot = self.kernel_params['timereboot']
+        except KeyError:
+            self.timereboot = 2
+
+        try:
+            self.tftp_ip = self.kernel_params['tftp_ip']
+        except KeyError:
+            self.tftp_ip = self.server
+
         # Init XMLRPC Client
         self.rpc = pkgServerProxy(self.server)
 
-        # Hostname and uuid
-        self.getHostInfo()
-
-        # Clonezilla parameters
-        self.getClonezillaParams()
-
-        # Mount NFS Shares
-        self.mountNFSShares()
-
-        # Partimag symlink
-        self.createPartimagSymlink()
+        if self.action == 'REGISTER':
+            # Define hostname
+            self.setHostname()
+        else:
+            # Get hostname and uuid
+            self.getHostInfo()
+            # Clonezilla parameters
+            self.getClonezillaParams()
+            # Mount NFS Shares
+            self.mountNFSShares()
+            # Partimag symlink
+            self.createPartimagSymlink()
 
     def initLogger(self):
         self.logger = logging.getLogger('davos')
@@ -195,3 +219,43 @@ class davosManager(object):
             self.logger.debug('Creating symlink to: %s', '/imaging_server/masters')
             os.symlink('/imaging_server/masters', '/home/partimag')
 
+    def is_valid_hostname(self,hostname):
+        """
+        Check that hostname is valid
+        """
+        if len(hostname) > 255:
+            return False
+        if hostname[-1] == ".":
+            hostname = hostname[:-1] # strip exactly one dot from the right, if present
+        allowed = re.compile("(?!-)[A-Z\d-]{1,63}(?<!-)$", re.IGNORECASE)
+        return all(allowed.match(x) for x in hostname.split("."))
+
+    def confirm(self,response):
+        """
+        Ask user to enter Y or N (case-insensitive).
+        :return: True if the answer is Y.
+        :rtype: bool
+        """
+        answer = ""
+        while answer not in ["y", "n"]:
+            answer = raw_input("You have entered %s. Is this correct [Y/N]? " % response).lower()
+        return answer == "y"
+
+    def setHostname(self):
+        """
+        Ask user to enter hostname of machine and set it on the system
+        """
+        self.logger.info('Asking user for hostname')
+        while True:
+            machinename = raw_input("Please enter the machine name: ")
+            if self.is_valid_hostname(machinename):
+                if self.confirm(machinename):
+                    self.hostname = machinename
+                    break
+            else:
+                print("The hostname %s entered is not valid." % machinename)
+        # Setting hostname
+        self.logger.info('Setting hostname: %s', self.hostname)
+        os.environ['HOSTNAME'] = self.hostname
+        self.runInShell('hostname ' + self.hostname)
+        self.runInShell('sed -i "s/debian/' + self.hostname + '/" /etc/hosts')
