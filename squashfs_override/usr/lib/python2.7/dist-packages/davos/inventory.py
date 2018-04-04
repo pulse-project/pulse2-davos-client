@@ -17,7 +17,7 @@ class Inventory(object):
         self.manager = manager
         self.disk = 'sda'
         self.logger.info('Running inventory')
-        o, e, ec = manager.runInShell('fusioninventory-agent --local /tmp --no-category=software,user,process,environment,network,controller,memory')
+        o, e, ec = manager.runInShell('fusioninventory-agent --local /tmp --no-category=software,user,process,environment,network,controller,memory,drive')
         o2, e2, ec = manager.runInShell('mv /tmp/*.ocs /tmp/inventory.xml')
 
         # Check if an error occured
@@ -29,16 +29,15 @@ class Inventory(object):
         # Loading XMLFile
         self.dom = dom = parse('/tmp/inventory.xml')
 
-        # Remove somes tags
-        for tag in ['DRIVES']:
-            for element in dom.getElementsByTagName(tag):
-                element.parentNode.removeChild(element)
-
+        # Replace ARCHNAME, OSNAME and OSCOMMENTS
         self.editNodeText('ARCHNAME', 'davos-imaging-diskless-env')
-        
+        self.editNodeText('OSNAME', 'Unknown operating system (PXE network boot inventory)')
+        timestamp = time.ctime()
+        self.editNodeText('OSCOMMENTS', 'Inventory generated on ' + timestamp)
+
         # If we have a detected OS, we inventory OS and SOFT
-        if self.OS:
-           getattr(self, self.OS + 'Handler').__call__()
+        #if self.OS:
+        #   getattr(self, self.OS + 'Handler').__call__()
 
         # Find mac address of connected interface
         pnic = psutil.net_io_counters(pernic=True)
