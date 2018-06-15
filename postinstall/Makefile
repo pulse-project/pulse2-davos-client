@@ -36,3 +36,5 @@ install-local:
 	cp -a linuxutils $(DESTDIR)$(postinstdir)/
 	mkdir -p $(DESTDIR)$(postinstdir)/sysprep/drivers
 	chmod 0755 $(DESTDIR)$(postinstdir)/macutils/pulse2-inventory-agent/install.sh
+	ln -s $(DESTDIR)/clients/win32/Pulse-Agent-win-FULL-latest.exe $(DESTDIR)$(postinstdir)/winutils/Pulse-Agent-win-FULL-latest.exe
+	ln -s $(DESTDIR)/clients/win32/Pulse-Agent-win-MINIMAL-latest.exe $(DESTDIR)$(postinstdir)/winutils/Pulse-Agent-win-MINIMAL-latest.exe
