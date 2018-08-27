@@ -99,9 +99,9 @@ class davosManager(object):
 
     def initLogger(self):
         self.logger = logging.getLogger('davos')
-        if self.log_davos == 'DEBUG' 
+        if self.log_davos == 'DEBUG': 
             self.log_level = level = logging.DEBUG
-        else
+        else:
             self.log_level = level = logging.INFO
 
         # Init logger
