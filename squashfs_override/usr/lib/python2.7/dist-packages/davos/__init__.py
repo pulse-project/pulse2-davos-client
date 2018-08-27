@@ -42,6 +42,8 @@ class davosManager(object):
 
         self.action = self.kernel_params['davos_action']
 
+        self.log_davos = self.kernel_params['log']
+
         # Get mac address if set. If not, it is a new machine
         try:
             self.mac = self.kernel_params['mac']
@@ -97,7 +99,10 @@ class davosManager(object):
 
     def initLogger(self):
         self.logger = logging.getLogger('davos')
-        self.log_level = level = logging.INFO #logging.DEBUG
+        if self.log_davos == 'DEBUG' 
+            self.log_level = level = logging.DEBUG
+        else
+            self.log_level = level = logging.INFO
 
         # Init logger
 
