@@ -32,6 +32,7 @@ class Inventory(object):
         # Replace ARCHNAME, OSNAME and OSCOMMENTS
         self.editNodeText('ARCHNAME', 'davos-imaging-diskless-env')
         self.editNodeText('OSNAME', 'Unknown operating system (PXE network boot inventory)')
+        self.editNodeText('FULL_NAME', 'Unknown operating system (PXE network boot inventory)')
         timestamp = time.ctime()
         self.editNodeText('OSCOMMENTS', 'Inventory generated on ' + timestamp)
 
