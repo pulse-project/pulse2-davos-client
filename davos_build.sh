@@ -11,7 +11,9 @@ base_url="http://free.nchc.org.tw/clonezilla-live/alternative/stable/"
 # =============================================================
 
 file_name=clonezilla-live-$version-$arch.zip
-full_url=$base_url/$version/$file_name
+#Uncomment this URL when not using stable folder.
+#full_url=$base_url/$version/$file_name
+full_url=$base_url/$file_name
 old_pwd=$(pwd)
 tempdir=$(mktemp -d)
 
