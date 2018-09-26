@@ -42,8 +42,6 @@ class davosManager(object):
 
         self.action = self.kernel_params['davos_action']
 
-        self.log_davos = self.kernel_params['log']
-
         # Get mac address if set. If not, it is a new machine
         try:
             self.mac = self.kernel_params['mac']
