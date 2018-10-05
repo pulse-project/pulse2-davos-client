@@ -1,3 +1,9 @@
+pulse2-davos-client (0.49.31)  stable; urgency=low
+
+   * Test automatic build on the BuildSystem
+
+ -- Nicolas Lécureuil <nicolas.lecureuil@siveo.net> Fri, 21 Sep 2018 00:59:02 +0100
+
 pulse2-davos-client (0.49.30)  stable; urgency=low
 
    * exclude more categories from minimal inventory for PXE registration
