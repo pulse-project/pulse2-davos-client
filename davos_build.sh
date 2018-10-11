@@ -25,7 +25,7 @@ if [[ ! -f "$file_name" ||  $(stat -c%s "$file_name") -lt 1048576 ]]; then
 fi
 
 # Entering temp directory
-mv $file_name $tempdir
+cp $file_name $tempdir
 cd $tempdir
 
 mkdir slitaz build target
