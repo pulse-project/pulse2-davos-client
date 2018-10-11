@@ -38,9 +38,13 @@ class davosManager(object):
 
         # Read Kernel Params
         self.getKernelParams()
-        self.server = self.kernel_params['fetch'].split('/')[2]
 
+        # Get all the mandatory set options
         self.action = self.kernel_params['davos_action']
+        self.nfs_server = self.kernel_params['nfs_server']
+        self.nfs_share_masters = self.kernel_params['nfs_share_masters']
+        self.nfs_share_postinst = self.kernel_params['nfs_share_postinst']
+        self.rpc_proxy = self.kernel_params['rpc_proxy']
 
         # Get mac address if set. If not, it is a new machine
         try:
@@ -48,39 +52,24 @@ class davosManager(object):
         except KeyError:
             pass
 
-        # Get nfs parameters if set. If not, use default values
-        try:
-            self.nfs_server = self.kernel_params['nfs_server']
-        except KeyError:
-            self.nfs_server = self.server
-
-        try:
-            self.nfs_share_masters = self.kernel_params['nfs_share_masters']
-        except KeyError:
-            self.nfs_share_masters = '/var/lib/pulse2/imaging/masters/'
-
-        try:
-            self.nfs_share_postinst = self.kernel_params['nfs_share_postinst']
-        except KeyError:
-            self.nfs_share_postinst = '/var/lib/pulse2/imaging/postinst/'
-
+        # For registration of new machine, get the dump path for the inventories,
+        # the waiting time before reboot and the tftp server ip for dumping the
+        # inventories to
         try:
             self.dump_path = self.kernel_params['dump_path']
         except KeyError:
             self.dump_path = 'inventories'
-
         try:
             self.timereboot = self.kernel_params['timereboot']
         except KeyError:
             self.timereboot = 2
-
         try:
             self.tftp_ip = self.kernel_params['tftp_ip']
         except KeyError:
-            self.tftp_ip = self.server
+            pass
 
         # Init XMLRPC Client
-        self.rpc = pkgServerProxy(self.server)
+        self.rpc = pkgServerProxy(self.rpc_proxy)
 
         if self.action == 'REGISTER':
             # Define hostname
@@ -111,12 +100,12 @@ class davosManager(object):
             hdlr2.setFormatter(ColoredFormatter("%(levelname)-18s %(message)s"))
             hdlr2.setLevel(level)
             self.logger.addHandler(hdlr2)
-        
+
         self.logger.setLevel(level)
 
-    
+
     def getKernelParams(self):
-        
+
         self.logger.debug('Reading kernel params')
 
         self.kernel_params = {}
@@ -129,7 +118,7 @@ class davosManager(object):
                 else:
                     key, value = item, None
                 self.kernel_params[key] = value
-        
+
         self.logger.debug('Got kernel params %s', str(self.kernel_params))
 
 
@@ -146,7 +135,7 @@ class davosManager(object):
 
         self.logger.debug('Error code: %d', process.returncode)
         self.logger.debug('Output: %s', out)
-        
+
         return out.strip(), err.strip(), process.returncode
 
 
@@ -214,7 +203,7 @@ class davosManager(object):
         if self.isEmptyDir('/home/partimag'):
             self.logger.debug('Removing dir: %s', '/home/partimag')
             os.rmdir('/home/partimag')
-   
+
             # Create a symlink to /masters remote directory
             self.logger.debug('Creating symlink to: %s', '/imaging_server/masters')
             os.symlink('/imaging_server/masters', '/home/partimag')
