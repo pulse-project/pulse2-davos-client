@@ -14,7 +14,7 @@ cp -rvf $1/squashfs_override/* ./
 mount -t proc none ./proc
 mount devpts /dev/pts -t devpts
 cp /etc/resolv.conf ./etc/resolv.conf
-chroot . ash -c 'tazpkg get-install python clonezilla python-psutil'
+chroot . ash -c 'tazpkg get-install python clonezilla python-psutil perl-uri'
 for file in {python-tftpy-0.8.0.tazpkg,fusioninventory-agent-2.4.2.tazpkg,perl-universal-require-0.18.tazpkg,perl-file-which-1.22.tazpkg}; do
     curl -O https://agents.siveo.net/imaging/${file}
 done
