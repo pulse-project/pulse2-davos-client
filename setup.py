@@ -1,3 +1,3 @@
-version='0.49.31',
+version='0.49.32',
 debian_distro='stretch',
-stable="false",
+stable="true",
