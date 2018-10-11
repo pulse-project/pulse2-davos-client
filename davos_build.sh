@@ -16,7 +16,7 @@ old_pwd=$(pwd)
 tempdir=$(mktemp -d)
 
 echo "Downloading Slitaz ..."
-[ ! -f $file_name ] && echo "Downloading Slitaz" && wget $full_url
+[ ! -f $file_name ] && echo "Downloading Slitaz" && curl -O $full_url
 
 # Sometimes we get html instead of real file
 if [[ ! -f "$file_name" ||  $(stat -c%s "$file_name") -lt 1048576 ]]; then
