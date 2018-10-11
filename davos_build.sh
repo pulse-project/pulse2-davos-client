@@ -2,16 +2,18 @@
 set -e
 
 # Edit these line to update clonezilla version
-version="20160627-xenial"
+version="20180812-bionic"
 arch="amd64"
-base_url="http://free.nchc.org.tw/clonezilla-live/alternative/oldstable/"
+base_url="http://free.nchc.org.tw/clonezilla-live/alternative/stable/"
 
 # =============================================================
 # Don't edit anything below these lines 
 # =============================================================
 
 file_name=clonezilla-live-$version-$arch.zip
-full_url=$base_url/$version/$file_name
+#Uncomment this URL when not using stable folder.
+#full_url=$base_url/$version/$file_name
+full_url=$base_url/$file_name
 old_pwd=$(pwd)
 tempdir=$(mktemp -d)
 

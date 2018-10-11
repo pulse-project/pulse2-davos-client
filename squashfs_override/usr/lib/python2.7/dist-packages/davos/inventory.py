@@ -11,13 +11,13 @@ import struct
 
 
 class Inventory(object):
-    
+
     def __init__(self, manager):
         self.logger = manager.logger
         self.manager = manager
         self.disk = 'sda'
         self.logger.info('Running inventory')
-        o, e, ec = manager.runInShell('fusioninventory-agent --local /tmp --no-category=software,user,process,environment,network,controller,memory,drive,usb,slot,input')
+        o, e, ec = manager.runInShell('fusioninventory-agent --local /tmp --no-category=software,user,process,environment,controller,memory,drive,usb,slot,input,port')
         o2, e2, ec = manager.runInShell('mv /tmp/*.ocs /tmp/inventory.xml')
 
         # Check if an error occured
@@ -32,6 +32,7 @@ class Inventory(object):
         # Replace ARCHNAME, OSNAME and OSCOMMENTS
         self.editNodeText('ARCHNAME', 'davos-imaging-diskless-env')
         self.editNodeText('OSNAME', 'Unknown operating system (PXE network boot inventory)')
+        self.editNodeText('FULL_NAME', 'Unknown operating system (PXE network boot inventory)')
         timestamp = time.ctime()
         self.editNodeText('OSCOMMENTS', 'Inventory generated on ' + timestamp)
 
@@ -72,7 +73,7 @@ class Inventory(object):
         win, e, ec = self.manager.runInShell('find /mnt -maxdepth 1 -type d -iname windows')
         etc, e, ec = self.manager.runInShell('find /mnt -maxdepth 1 -type d -iname etc')
         disk_info, e, ec = self.manager.runInShell('fdisk /dev/%s -l', self.disk)
-        
+
         # If we get a result, it's a windows
         if win.strip() and 'NTFS' in disk_info:
             return 'windows'
@@ -112,12 +113,12 @@ class Inventory(object):
             self.editNodeText('ARCH', '64-bit', 'OPERATINGSYSTEM')
         else:
             self.editNodeText('ARCH', '32-bit', 'OPERATINGSYSTEM')
-           
+
         # ======== SOFTWARE SECTION =========================================
 
         soft_keys = reg.open('Microsoft\\Windows\\CurrentVersion\\Uninstall').subkeys()
         soft_keys+= reg.open('Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall').subkeys()
-        
+
         for key in soft_keys:
             soft_dict = {}
             for entry in key.values():
@@ -125,7 +126,7 @@ class Inventory(object):
                     soft_dict[entry.name()] = entry.value().encode('ascii', 'ignore')
                 except:
                     soft_dict[entry.name()] = entry.value()
-            
+
             soft = {}
             soft['ARCH'] = 'x86_64'
             soft['FROM'] = 'registry'
@@ -150,7 +151,7 @@ class Inventory(object):
 
             if 'URLInfoAbout' in soft_dict:
                 soft['URL_INFO_ABOUT'] = soft_dict['URLInfoAbout']
-        
+
             self.addSoftware(soft)
 
 
@@ -183,6 +184,10 @@ class Inventory(object):
         macaddrtxt = self.dom.createTextNode(self.macaddress)
         new_macaddr.appendChild(macaddrtxt)
 
+        new_macaddrpxe = self.dom.createElement('MACADDRPXE')
+        macaddrtxt = self.dom.createTextNode(self.macaddress)
+        new_macaddrpxe.appendChild(macaddrtxt)
+
         new_ipaddress = self.dom.createElement('IPADDRESS')
         ipaddresstxt = self.dom.createTextNode(self.ipaddress)
         new_ipaddress.appendChild(ipaddresstxt)
@@ -205,6 +210,7 @@ class Inventory(object):
 
         new_networks.appendChild(new_description)
         new_networks.appendChild(new_macaddr)
+        new_networks.appendChild(new_macaddrpxe)
         new_networks.appendChild(new_ipaddress)
         new_networks.appendChild(new_ipmask)
         new_networks.appendChild(new_status)
@@ -223,4 +229,3 @@ class Inventory(object):
             node.firstChild.replaceWholeText(value)
         except:
             self.logger.warning('Cannot set %s to %s', nodename, value)
-

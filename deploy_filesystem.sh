@@ -16,9 +16,19 @@ cp usr/bin/vim.tiny usr/bin/vim
 
 # Installing additional packages
 mount -t proc none ./proc
+mount devpts /dev/pts -t devpts
 cp /etc/resolv.conf ./etc/resolv.conf
-chroot . bash -c 'apt-get update && apt-get -y install python-minimal libpython-stdlib fusioninventory-agent dos2unix linux-firmware python-tftpy python-psutil && exit'
+chroot . bash -c 'mkdir /boot'
+chroot . bash -c 'apt-get update && apt-get -y install apt-utils python-minimal libpython-stdlib fusioninventory-agent dos2unix linux-firmware python-tftpy python-psutil efivar ash && exit'
+cp /root/partclone_0.2.89-4_amd64.deb /root/clonezilla_3.21.13-1_all.deb /root/drbl_2.20.11-1_all.deb .
+chroot . bash -c 'dpkg -i partclone_0.2.89-4_amd64.deb clonezilla_3.21.13-1_all.deb drbl_2.20.11-1_all.deb'
 chroot . bash -c 'ln -s /usr/lib/systemd/system/sshd.service /etc/systemd/system/multi-user.target.wants/sshd.service'
+chroot . bash -c 'rm -frv /opt/*'
+chroot . bash -c 'echo efivars >> /etc/modules'
+chroot . bash -c 'apt-get autoclean -y '
+chroot . bash -c 'apt-get clean -y '
+chroot . bash -c 'apt-get autoremove -y '
+chroot . bash -c 'find /var/lib/apt/lists/ -maxdepth 1 -type f -exec rm -v {} \;'
 
 rm -f ./etc/resolv.conf
 umount ./proc
