@@ -3,14 +3,14 @@ set -e
 
 # Edit these line to update slitaz version
 version="rolling"
-flavor="core64"
+flavor="core-5in1"
 base_url="http://mirror.slitaz.org/iso/"
 
 # =============================================================
 # Don't edit anything below these lines
 # =============================================================
 
-file_name=slitaz-${version}-${flavor}.iso
+file_name=slitaz-${flavor}.iso
 full_url=${base_url}/${version}/${file_name}
 old_pwd=$(pwd)
 tempdir=$(mktemp -d)
@@ -35,7 +35,7 @@ mount -o loop $file_name slitaz
 
 # Move needed files to build dir and target dir
 cp slitaz/boot/bzImage64 target/
-cp slitaz/boot/rootfs.gz build/
+cp slitaz/boot/rootfs1.gz64 build/rootfs.gz
 
 # Unmount iso
 umount slitaz
