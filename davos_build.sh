@@ -55,6 +55,7 @@ find . -print | cpio -o -H newc | gzip -9 > ../target/rootfs.gz
 cd ..
 
 # Move built files to their final dir
+mkdir -p $old_pwd/var/lib/pulse2/imaging/davos/
 mv -f target/* $old_pwd/var/lib/pulse2/imaging/davos/
 
 # Remove temp dir
