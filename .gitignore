@@ -1,2 +1,3 @@
 var/lib/pulse2/imaging/davos/
 *.pyc
+*.iso
