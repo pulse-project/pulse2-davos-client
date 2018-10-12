@@ -19,10 +19,19 @@ for file in {python-tftpy-0.8.0.tazpkg,fusioninventory-agent-2.4.2.tazpkg,perl-u
     curl -O https://agents.siveo.net/imaging/${file}
 done
 chroot . ash -c 'tazpkg install *.tazpkg'
+chroot . ash -c 'adduser -D siveo'
+chroot . ash -c 'echo -e "siveo\nsiveo" | passwd siveo'
 
 rm -f ./*.tazpkg
 rm -f ./etc/resolv.conf
+rm -f ./var/cache/tazpkg/5.0/packages/*
 umount ./proc
 
 # Disable kernel low level messages in the console
 sed -i 's/^#kernel\.printk.*/kernel.printk = 3 4 1 3/' etc/sysctl.conf
+
+# Define services to be started automatically
+sed -i '/^RUN_DAEMONS=/ s/"$/ nfsd dropbear"/' ./etc/rcS.conf
+
+# Define pre-login message
+sed -i 's/^MESSAGE=.*$/MESSAGE="Welcome to SIV3O Pulse diskless environment\nLog on with root/root or siveo/siveo"/' ./etc/rcS.conf
