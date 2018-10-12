@@ -34,4 +34,4 @@ sed -i 's/^#kernel\.printk.*/kernel.printk = 3 4 1 3/' etc/sysctl.conf
 sed -i '/^RUN_DAEMONS=/ s/"$/ nfsd dropbear"/' ./etc/rcS.conf
 
 # Define pre-login message
-sed -i 's/^MESSAGE=.*$/MESSAGE="Welcome to SIV3O Pulse diskless environment\nLog on with root/root or siveo/siveo"/' ./etc/rcS.conf
+sed -i 's/^MESSAGE=.*$/MESSAGE="Welcome to SIV3O Pulse diskless environment\nLog on with root\/root or siveo\/siveo"/' ./etc/rcS.conf
