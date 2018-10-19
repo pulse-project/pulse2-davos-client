@@ -37,3 +37,6 @@ sed -i '/^RUN_DAEMONS=/ s/"$/ nfsd dropbear"/' ./etc/rcS.conf
 
 # Define pre-login message
 sed -i 's/^MESSAGE=.*$/MESSAGE="Welcome to SIV3O Pulse diskless environment\nLog on with root\/root or siveo\/siveo"/' ./etc/rcS.conf
+
+# Run davos at startup
+sed -i 's#^tty1:.*$#tty1::respawn:/usr/sbin/davos#' ./etc/inittab
