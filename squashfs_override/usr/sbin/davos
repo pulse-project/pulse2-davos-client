@@ -23,11 +23,6 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
 
-import os
-#TODO: Only mount if /proc/stat is missing
-#We mount proc manually
-os.system('mount -t proc none /proc')
-
 import signal
 from davos import davosManager
 from davos.image_saver import imageSaver
