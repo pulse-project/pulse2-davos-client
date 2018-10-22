@@ -14,8 +14,11 @@ cp -rvf $1/squashfs_override/* ./
 mount -t proc none ./proc
 mount devpts /dev/pts -t devpts
 cp /etc/resolv.conf ./etc/resolv.conf
-chroot . ash -c 'tazpkg get-install python python-netifaces bash clonezilla perl-uri linux-nfsd nfs-utils locale-fr'
+mkdir -p ./var/cache/tazpkg/5.0/packages/
+cp /tmp/packages/*.tazpkg ./var/cache/tazpkg/5.0/packages/
+chroot . ash -c 'tazpkg get-install python python-netifaces bash clonezilla perl-uri locale-fr'
 for file in {python-tftpy-0.8.0.tazpkg,fusioninventory-agent-2.4.2.tazpkg,perl-universal-require-0.18.tazpkg,perl-file-which-1.22.tazpkg,perl-treepp-0.43.tazpkg,python-psutil-5.4.3.tazpkg}; do
+    cp ./var/cache/tazpkg/5.0/packages/$file .
     if [[ ! -f $file ]]; then
         curl -O https://agents.siveo.net/imaging/${file}
     fi
@@ -24,6 +27,12 @@ chroot . ash -c 'tazpkg install *.tazpkg'
 chroot . ash -c 'adduser -D siveo'
 chroot . ash -c 'echo -e "siveo\nsiveo" | passwd siveo'
 
+# Save packages for future use
+mkdir -p /tmp/packages/
+cp ./*.tazpkg /tmp/packages/
+cp ./var/cache/tazpkg/5.0/packages/*.tazpkg /tmp/packages/
+
+# Clean the FS before building the rootfs
 rm -f ./*.tazpkg
 rm -f ./etc/resolv.conf
 rm -f ./var/cache/tazpkg/5.0/packages/*
@@ -33,10 +42,10 @@ umount ./proc
 sed -i 's/^#kernel\.printk.*/kernel.printk = 3 4 1 3/' etc/sysctl.conf
 
 # Define services to be started automatically
-sed -i '/^RUN_DAEMONS=/ s/"$/ nfsd dropbear"/' ./etc/rcS.conf
+sed -i '/^RUN_DAEMONS=/ s/"$/ dropbear"/' ./etc/rcS.conf
 
 # Define pre-login message
-sed -i 's/^MESSAGE=.*$/MESSAGE="Welcome to SIV3O Pulse diskless environment\nLog on with root\/root or siveo\/siveo"/' ./etc/rcS.conf
+sed -i 's/^MESSAGE=.*$/MESSAGE="Welcome to SIV3O Pulse diskless environment"/' ./etc/rcS.conf
 
 # Run davos at startup
-sed -i 's#^tty1:.*$#tty1::respawn:/usr/sbin/davos#' ./etc/inittab
+sed -i 's#^tty1:.*$#tty1::wait:/usr/sbin/davos#' ./etc/inittab
