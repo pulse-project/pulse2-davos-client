@@ -45,7 +45,7 @@ sed -i 's/^#kernel\.printk.*/kernel.printk = 3 4 1 3/' etc/sysctl.conf
 sed -i '/^RUN_DAEMONS=/ s/"$/ dropbear"/' ./etc/rcS.conf
 
 # Configure dropbear
-sed -i '/^DROPBEAR_OPTIONS=/ s/-w //' /etc/daemons.conf
+sed -i '/^DROPBEAR_OPTIONS=/ s/-w //' ./etc/daemons.conf
 
 # Define pre-login message
 sed -i 's/^MESSAGE=.*$/MESSAGE="Welcome to SIV3O Pulse diskless environment"/' ./etc/rcS.conf
