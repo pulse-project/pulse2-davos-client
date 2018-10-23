@@ -24,8 +24,8 @@ for file in {python-tftpy-0.8.0.tazpkg,fusioninventory-agent-2.4.2.tazpkg,perl-u
     fi
 done
 chroot . ash -c 'tazpkg install *.tazpkg'
-chroot . ash -c 'adduser -D siveo'
-chroot . ash -c 'echo -e "siveo\nsiveo" | passwd siveo'
+chroot . ash -c 'adduser -D pulse'
+chroot . ash -c 'echo -e "pulse\npulse" | passwd pulse'
 
 # Save packages for future use
 mkdir -p /tmp/packages/
@@ -43,6 +43,9 @@ sed -i 's/^#kernel\.printk.*/kernel.printk = 3 4 1 3/' etc/sysctl.conf
 
 # Define services to be started automatically
 sed -i '/^RUN_DAEMONS=/ s/"$/ dropbear"/' ./etc/rcS.conf
+
+# Configure dropbear
+sed -i '/^DROPBEAR_OPTIONS=/ s/-w //' /etc/daemons.conf
 
 # Define pre-login message
 sed -i 's/^MESSAGE=.*$/MESSAGE="Welcome to SIV3O Pulse diskless environment"/' ./etc/rcS.conf

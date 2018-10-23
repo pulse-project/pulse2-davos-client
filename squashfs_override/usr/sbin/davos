@@ -88,7 +88,7 @@ if __name__ == '__main__':
         time.sleep(int(mgr.timereboot))
     elif action == 'DISKLESS':
         print 'Entering diskless mode'
-        print 'Go to the next console (CTRL+ALT+F2) and log on with root/root or siveo/siveo'
+        print 'Go to the next console (CTRL+ALT+F2) and log on with root/root or pulse/pulse'
         sys.exit(0)
     else:
         print 'Unknown action, leaving'
