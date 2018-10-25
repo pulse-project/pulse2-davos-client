@@ -15,8 +15,8 @@ mount -t proc none ./proc
 mount devpts /dev/pts -t devpts
 cp /etc/resolv.conf ./etc/resolv.conf
 mkdir -p ./var/cache/tazpkg/5.0/packages/
-cp /tmp/packages/*.tazpkg ./var/cache/tazpkg/5.0/packages/
-chroot . ash -c 'tazpkg get-install python python-netifaces bash clonezilla perl-uri locale-fr'
+cp /tmp/downloads/*.tazpkg ./var/cache/tazpkg/5.0/packages/
+chroot . ash -c 'tazpkg get-install python python-netifaces bash clonezilla perl-uri locale-fr nfs-utils'
 for file in {python-tftpy-0.8.0.tazpkg,fusioninventory-agent-2.4.2.tazpkg,perl-universal-require-0.18.tazpkg,perl-file-which-1.22.tazpkg,perl-treepp-0.43.tazpkg,python-psutil-5.4.3.tazpkg}; do
     cp ./var/cache/tazpkg/5.0/packages/$file .
     if [[ ! -f $file ]]; then
@@ -28,9 +28,9 @@ chroot . ash -c 'adduser -D pulse'
 chroot . ash -c 'echo -e "pulse\npulse" | passwd pulse'
 
 # Save packages for future use
-mkdir -p /tmp/packages/
-cp ./*.tazpkg /tmp/packages/
-cp ./var/cache/tazpkg/5.0/packages/*.tazpkg /tmp/packages/
+mkdir -p /tmp/downloads/
+cp ./*.tazpkg /tmp/downloads/
+cp ./var/cache/tazpkg/5.0/packages/*.tazpkg /tmp/downloads/
 
 # Clean the FS before building the rootfs
 rm -f ./*.tazpkg
@@ -39,7 +39,7 @@ rm -f ./var/cache/tazpkg/5.0/packages/*
 umount ./proc
 
 # Disable kernel low level messages in the console
-sed -i 's/^#kernel\.printk.*/kernel.printk = 3 4 1 3/' etc/sysctl.conf
+sed -i 's/^#kernel\.printk.*/kernel.printk = 3 4 1 3/' ./etc/sysctl.conf
 
 # Define services to be started automatically
 sed -i '/^RUN_DAEMONS=/ s/"$/ dropbear"/' ./etc/rcS.conf
