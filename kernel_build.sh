@@ -61,6 +61,11 @@ make INSTALL_MOD_PATH=../kernel_build/_modules modules_install
 
 # Save config file as well as kernel source
 cp .config ${davos_src}/kernel-config
+
+if [[ -d "/tmp/downloads/" ]]; then
+    mkdir -p /tmp/downloads/
+fi
+
 cp ../${file_name} /tmp/downloads/
 
 popd
