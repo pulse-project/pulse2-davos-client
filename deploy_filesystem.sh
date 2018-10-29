@@ -27,6 +27,9 @@ chroot . ash -c 'tazpkg install *.tazpkg'
 chroot . ash -c 'adduser -D pulse'
 chroot . ash -c 'echo -e "pulse\npulse" | passwd pulse'
 
+# Fix clonezilla language Setup
+chroot . ash -c 'ln -s /usr/share/drbl/lang/bash/en_US /usr/share/drbl/lang/bash/en_US.UTF-8'
+
 # Save packages for future use
 mkdir -p /tmp/downloads/
 cp ./*.tazpkg /tmp/downloads/
