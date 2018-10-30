@@ -18,8 +18,13 @@ full_url=${base_url}/${version}/${file_name}
 tempdir=$(mktemp -d)
 davos_src="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 
-echo "Downloading Slitaz ..."
-[ ! -f $file_name ] && echo "Downloading Slitaz" && curl -O $full_url
+if [[ -f /tmp/downloads/${file_name} ]]; then
+    echo "Copying ${file_name} from /tmp/downloads"
+    cp /tmp/downloads/${file_name} .
+else
+    echo "Downloading Slitaz from ${full_url}"
+    curl -O ${full_url}
+fi
 
 # Sometimes we get html instead of real file
 if [[ ! -f "$file_name" ||  $(stat -c%s "$file_name") -lt 1048576 ]]; then
@@ -67,8 +72,13 @@ cd ..
 mkdir -p ${davos_src}/var/lib/pulse2/imaging/davos/
 mv -f target/* ${davos_src}/var/lib/pulse2/imaging/davos/
 
-# Remove temp dir
+# Remove temp dir
 rm -r $tempdir
 
+# Save slitaz iso for future use
+if [[ -d "/tmp/downloads/" ]]; then
+    mkdir -p /tmp/downloads/
+fi
+cp ${davos_src}/${file_name} /tmp/downloads/
 
 echo "Davos diskless environment built successfuly"
