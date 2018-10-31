@@ -40,7 +40,7 @@ mkdir slitaz build target
 # Build the kernel to be used by davos
 ${davos_src}/kernel_build.sh ${tempdir} ${kernel_version} ${kernel_base_url}
 
-# Mount slitaz iso
+# Mount slitaz iso
 mount -o loop $file_name slitaz
 
 # Move needed files to build dir and target dir

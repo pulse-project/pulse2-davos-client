@@ -16,19 +16,19 @@ mount devpts /dev/pts -t devpts
 cp /etc/resolv.conf ./etc/resolv.conf
 mkdir -p ./var/cache/tazpkg/5.0/packages/
 cp /tmp/downloads/*.tazpkg ./var/cache/tazpkg/5.0/packages/
-chroot . ash -c 'tazpkg get-install python python-netifaces bash clonezilla gptfdisk util-linux-sfdisk perl-uri locale-fr nfs-utils'
-for file in {python-tftpy-0.8.0.tazpkg,fusioninventory-agent-2.4.2.tazpkg,perl-universal-require-0.18.tazpkg,perl-file-which-1.22.tazpkg,perl-treepp-0.43.tazpkg,python-psutil-5.4.3.tazpkg}; do
+for file in {python-tftpy-0.8.0.tazpkg,fusioninventory-agent-2.4.2.tazpkg,perl-universal-require-0.18.tazpkg,perl-file-which-1.22.tazpkg,perl-treepp-0.43.tazpkg,python-psutil-5.4.3.tazpkg,partclone-0.2.49.tazpkg}; do
     cp ./var/cache/tazpkg/5.0/packages/$file .
     if [[ ! -f $file ]]; then
         curl -O https://agents.siveo.net/imaging/${file}
     fi
 done
 chroot . ash -c 'tazpkg install *.tazpkg'
+chroot . ash -c 'tazpkg get-install python python-netifaces bash clonezilla gptfdisk util-linux-sfdisk perl-uri locale-fr nfs-utils'
 chroot . ash -c 'adduser -D pulse'
 chroot . ash -c 'echo -e "pulse\npulse" | passwd pulse'
 
 # Fix clonezilla language Setup
-chroot . ash -c 'ln -s /usr/share/drbl/lang/bash/en_US /usr/share/drbl/lang/bash/en_US.UTF-8'
+chroot . ash -c 'cd /usr/share/drbl/lang/bash/ && ln -s en_US en_US.UTF-8'
 
 # Save packages for future use
 mkdir -p /tmp/downloads/
