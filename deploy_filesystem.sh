@@ -23,7 +23,7 @@ for file in {python-tftpy-0.8.0.tazpkg,fusioninventory-agent-2.4.2.tazpkg,perl-u
     fi
 done
 chroot . ash -c 'tazpkg install *.tazpkg'
-chroot . ash -c 'tazpkg get-install python python-netifaces bash clonezilla gptfdisk util-linux-sfdisk perl-uri locale-fr nfs-utils'
+chroot . ash -c 'tazpkg get-install python python-netifaces bash clonezilla gptfdisk util-linux-sfdisk lvm2 perl-uri locale-fr nfs-utils'
 chroot . ash -c 'adduser -D pulse'
 chroot . ash -c 'echo -e "pulse\npulse" | passwd pulse'
 
