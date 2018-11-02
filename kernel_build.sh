@@ -69,4 +69,4 @@ fi
 cp ../${file_name} /tmp/downloads/
 
 popd
-echo "Davos diskless environment built successfuly"
+echo "Davos kernel built successfuly"
