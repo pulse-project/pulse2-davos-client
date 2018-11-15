@@ -16,7 +16,7 @@ mount devpts /dev/pts -t devpts
 cp /etc/resolv.conf ./etc/resolv.conf
 mkdir -p ./var/cache/tazpkg/5.0/packages/
 cp /tmp/downloads/*.tazpkg ./var/cache/tazpkg/5.0/packages/
-for file in {python-tftpy-0.8.0.tazpkg,fusioninventory-agent-2.4.2.tazpkg,perl-universal-require-0.18.tazpkg,perl-file-which-1.22.tazpkg,perl-treepp-0.43.tazpkg,python-psutil-5.4.3.tazpkg,partclone-0.2.49.tazpkg}; do
+for file in {python-tftpy-0.8.0.tazpkg,fusioninventory-agent-2.4.2.tazpkg,perl-universal-require-0.18.tazpkg,perl-file-which-1.22.tazpkg,perl-treepp-0.43.tazpkg,python-psutil-5.4.3.tazpkg,clonezilla-3.21.13.tazpkg,drbl-2.20.11.tazpkg,partclone-0.2.89.tazpkg}; do
     cp ./var/cache/tazpkg/5.0/packages/$file .
     if [[ ! -f $file ]]; then
         curl -O https://agents.siveo.net/imaging/${file}
