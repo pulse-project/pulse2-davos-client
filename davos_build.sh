@@ -76,7 +76,7 @@ mv -f target/* ${davos_src}/var/lib/pulse2/imaging/davos/
 rm -r $tempdir
 
 # Save slitaz iso for future use
-if [[ -d "/tmp/downloads/" ]]; then
+if [[ ! -d "/tmp/downloads/" ]]; then
     mkdir -p /tmp/downloads/
 fi
 cp ${davos_src}/${file_name} /tmp/downloads/
