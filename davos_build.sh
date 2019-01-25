@@ -47,9 +47,6 @@ ${davos_src}/kernel_build.sh ${tempdir} ${kernel_version} ${kernel_base_url}
 cp kernel_build/bzImage64 target/bzImage64
 cp slitaz/boot/rootfs.gz build/
 
-# Unmount iso
-umount slitaz
-
 cd build
 
 # Decompressing the rootfs
