@@ -57,8 +57,6 @@ lzcat rootfs.gz | cpio -id
 rm rootfs.gz
 #sed 's/MULTICAST_ALL_ADDR="224.0.0.1"/MULTICAST_ALL_ADDR="239.254.1.255"/' -i etc/drbl/drbl-ocs.conf
 
-mkdir -p /tmp/downloads/
-
 # Run deploy script to patch the filesystem
 ${davos_src}/deploy_filesystem.sh ${davos_src}
 
