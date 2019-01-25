@@ -14,16 +14,7 @@ cp -rvf $1/squashfs_override/* ./
 mount -t proc none ./proc
 mount devpts /dev/pts -t devpts
 cp /etc/resolv.conf ./etc/resolv.conf
-mkdir -p ./var/cache/tazpkg/5.0/packages/
-cp /tmp/downloads/*.tazpkg ./var/cache/tazpkg/5.0/packages/
-for file in {python-tftpy-0.8.0.tazpkg,fusioninventory-agent-2.4.2.tazpkg,perl-universal-require-0.18.tazpkg,perl-file-which-1.22.tazpkg,perl-treepp-0.43.tazpkg,python-psutil-5.4.3.tazpkg,clonezilla-3.21.13.tazpkg,drbl-2.20.11.tazpkg,partclone-0.2.89.tazpkg,linux-4.17.7-x86_64.tazpkg,linux-efi-4.17.7-x86_64.tazpkg,linux-nfsd-4.17.7-x86_64.tazpkg,linux-nfs-4.17.7-x86_64.tazpkg}; do
-    cp ./var/cache/tazpkg/5.0/packages/$file .
-    if [[ ! -f $file ]]; then
-        curl -O https://agents.siveo.net/imaging/${file}
-    fi
-done
-chroot . ash -c 'tazpkg install *.tazpkg --forced'
-chroot . ash -c 'tazpkg get-install python python-netifaces bash gptfdisk util-linux-sfdisk lvm2 perl-uri locale-fr nfs-utils'
+chroot . ash -c 'apt install clonezilla drbl partclone -y'
 chroot . ash -c 'adduser -D pulse'
 chroot . ash -c 'echo -e "pulse\npulse" | passwd pulse'
 
