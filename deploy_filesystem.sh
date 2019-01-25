@@ -19,7 +19,7 @@ chroot . bash -c 'adduser -D pulse'
 chroot . bash -c 'echo -e "pulse\npulse" | passwd pulse'
 
 # Fix clonezilla language Setup
-chroot . ash -c 'cd /usr/share/drbl/lang/bash/ && ln -s en_US en_US.UTF-8'
+chroot . bash -c 'cd /usr/share/drbl/lang/bash/ && ln -s en_US en_US.UTF-8'
 
 # Save packages for future use
 mkdir -p /tmp/downloads/
