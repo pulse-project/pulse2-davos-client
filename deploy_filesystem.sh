@@ -21,15 +21,8 @@ chroot . bash -c 'echo -e "pulse\npulse" | passwd pulse'
 # Fix clonezilla language Setup
 chroot . bash -c 'cd /usr/share/drbl/lang/bash/ && ln -s en_US en_US.UTF-8'
 
-# Save packages for future use
-mkdir -p /tmp/downloads/
-cp ./*.tazpkg /tmp/downloads/
-cp ./var/cache/tazpkg/5.0/packages/*.tazpkg /tmp/downloads/
-
 # Clean the FS before building the rootfs
-rm -f ./*.tazpkg
 rm -f ./etc/resolv.conf
-rm -f ./var/cache/tazpkg/5.0/packages/*
 umount ./proc
 
 # Disable kernel low level messages in the console
