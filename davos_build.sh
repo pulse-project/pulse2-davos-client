@@ -45,23 +45,25 @@ ${davos_src}/kernel_build.sh ${tempdir} ${kernel_version} ${kernel_base_url}
 # Move needed files to build dir and target dir
 #cp slitaz/boot/bzImage64 target/
 cp kernel_build/bzImage64 target/bzImage64
-cp slitaz/boot/rootfs.gz build/
+cp filesystem.squashfs  build/
 
 cd build
 
 # Decompressing the rootfs
-lzcat rootfs.gz | cpio -id
-rm rootfs.gz
+unsquashfs filesystem.squashfs  && rm filesystem.squashfs
+cd squashfs-root
 #sed 's/MULTICAST_ALL_ADDR="224.0.0.1"/MULTICAST_ALL_ADDR="239.254.1.255"/' -i etc/drbl/drbl-ocs.conf
 
 # Run deploy script to patch the filesystem
 ${davos_src}/deploy_filesystem.sh ${davos_src}
 
 # Copy kernel modules
-cp -a ../kernel_build/_modules/* .
+cp -a ../../kernel_build/_modules/* .
 
+cd ..
 # Recompress the new rootfs
-find . -print | cpio -o -H newc | gzip -9 > ../target/rootfs.gz
+mksquashfs squashfs-root/ fs.squashfs -noappend -always-use-fragments
+rm -r squashfs-root/
 cd ..
 
 # Move built files to their final dir
@@ -70,11 +72,5 @@ mv -f target/* ${davos_src}/var/lib/pulse2/imaging/davos/
 
 # Remove temp dir
 rm -r $tempdir
-
-# Save slitaz iso for future use
-if [[ ! -d "/tmp/downloads/" ]]; then
-    mkdir -p /tmp/downloads/
-fi
-cp ${davos_src}/${file_name} /tmp/downloads/
 
 echo "Davos diskless environment built successfuly"
