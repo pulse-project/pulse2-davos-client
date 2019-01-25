@@ -14,9 +14,9 @@ cp -rvf $1/squashfs_override/* ./
 mount -t proc none ./proc
 mount devpts /dev/pts -t devpts
 cp /etc/resolv.conf ./etc/resolv.conf
-chroot . ash -c 'apt install clonezilla drbl partclone -y'
-chroot . ash -c 'adduser -D pulse'
-chroot . ash -c 'echo -e "pulse\npulse" | passwd pulse'
+chroot . bash -c 'apt install clonezilla drbl partclone -y'
+chroot . bash -c 'adduser -D pulse'
+chroot . bash -c 'echo -e "pulse\npulse" | passwd pulse'
 
 # Fix clonezilla language Setup
 chroot . ash -c 'cd /usr/share/drbl/lang/bash/ && ln -s en_US en_US.UTF-8'
