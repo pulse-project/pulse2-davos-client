@@ -1,10 +1,12 @@
 #!/bin/bash
 set -e
 
+
+apt install curl -y
+
 # Edit these line to update slitaz version
-version="rolling"
-flavor="core64"
-base_url="http://mirror.slitaz.org/iso/"
+version="buster"
+base_url="https://agents.siveo.net/squashfs"
 
 kernel_version="4.19"
 kernel_base_url="https://cdn.kernel.org/pub/linux/kernel/v4.x"
@@ -13,8 +15,8 @@ kernel_base_url="https://cdn.kernel.org/pub/linux/kernel/v4.x"
 # Don't edit anything below these lines
 # =============================================================
 
-file_name=slitaz-${version}-${flavor}.iso
-full_url=${base_url}/${version}/${file_name}
+file_name=filesystem.squashfs
+full_url=${base_url}/${file_name}
 tempdir=$(mktemp -d)
 davos_src="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 
@@ -22,7 +24,7 @@ if [[ -f /tmp/downloads/${file_name} ]]; then
     echo "Copying ${file_name} from /tmp/downloads"
     cp /tmp/downloads/${file_name} .
 else
-    echo "Downloading Slitaz from ${full_url}"
+    echo "Downloading Squashfs from ${full_url}"
     curl -O ${full_url}
 fi
 
@@ -35,13 +37,10 @@ fi
 # Entering temp directory
 cp $file_name $tempdir
 cd $tempdir
-mkdir slitaz build target
+mkdir build target
 
 # Build the kernel to be used by davos
 ${davos_src}/kernel_build.sh ${tempdir} ${kernel_version} ${kernel_base_url}
-
-# Mount slitaz iso
-mount -o loop $file_name slitaz
 
 # Move needed files to build dir and target dir
 #cp slitaz/boot/bzImage64 target/
