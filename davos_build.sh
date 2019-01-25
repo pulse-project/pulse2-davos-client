@@ -6,6 +6,9 @@ version="rolling"
 flavor="core64"
 base_url="http://mirror.slitaz.org/iso/"
 
+kernel_version="4.19"
+kernel_base_url="https://cdn.kernel.org/pub/linux/kernel/v4.x"
+
 # =============================================================
 # Don't edit anything below these lines
 # =============================================================
@@ -34,11 +37,15 @@ cp $file_name $tempdir
 cd $tempdir
 mkdir slitaz build target
 
+# Build the kernel to be used by davos
+${davos_src}/kernel_build.sh ${tempdir} ${kernel_version} ${kernel_base_url}
+
 # Mount slitaz iso
 mount -o loop $file_name slitaz
 
 # Move needed files to build dir and target dir
-cp slitaz/boot/bzImage64 target/
+#cp slitaz/boot/bzImage64 target/
+cp kernel_build/bzImage64 target/bzImage64
 cp slitaz/boot/rootfs.gz build/
 
 # Unmount iso
@@ -53,6 +60,9 @@ rm rootfs.gz
 
 # Run deploy script to patch the filesystem
 ${davos_src}/deploy_filesystem.sh ${davos_src}
+
+# Copy kernel modules
+cp -a ../kernel_build/_modules/* .
 
 # Recompress the new rootfs
 find . -print | cpio -o -H newc | gzip -9 > ../target/rootfs.gz
