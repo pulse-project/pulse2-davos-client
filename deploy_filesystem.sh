@@ -26,16 +26,16 @@ rm -f ./etc/resolv.conf
 umount ./proc
 
 # Disable kernel low level messages in the console
-sed -i 's/^#kernel\.printk.*/kernel.printk = 3 4 1 3/' ./etc/sysctl.conf
+##sed -i 's/^#kernel\.printk.*/kernel.printk = 3 4 1 3/' ./etc/sysctl.conf
 
 # Define services to be started automatically
-sed -i '/^RUN_DAEMONS=/ s/"$/ dropbear"/' ./etc/rcS.conf
+##sed -i '/^RUN_DAEMONS=/ s/"$/ dropbear"/' ./etc/rcS.conf
 
 # Configure dropbear
-sed -i '/^DROPBEAR_OPTIONS=/ s/-w //' ./etc/daemons.conf
+##sed -i '/^DROPBEAR_OPTIONS=/ s/-w //' ./etc/daemons.conf
 
 # Define pre-login message
-sed -i 's/^MESSAGE=.*$/MESSAGE="Welcome to SIV3O Pulse diskless environment"/' ./etc/rcS.conf
+##sed -i 's/^MESSAGE=.*$/MESSAGE="Welcome to SIV3O Pulse diskless environment"/' ./etc/rcS.conf
 
 # Run davos at startup
-sed -i 's#^tty1:.*$#tty1::wait:/usr/sbin/davos#' ./etc/inittab
+##sed -i 's#^tty1:.*$#tty1::wait:/usr/sbin/davos#' ./etc/inittab
