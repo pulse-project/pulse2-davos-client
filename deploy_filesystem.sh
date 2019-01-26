@@ -15,8 +15,9 @@ mount -t proc none ./proc
 mount devpts /dev/pts -t devpts
 cp /etc/resolv.conf ./etc/resolv.conf
 chroot . bash -c 'apt install clonezilla drbl partclone -y'
-chroot . bash -c 'adduser -D pulse'
-chroot . bash -c 'echo -e "pulse\npulse" | passwd pulse'
+# FIXME
+#chroot . bash -c 'adduser -D pulse'
+#chroot . bash -c 'echo -e "pulse\npulse" | passwd pulse'
 
 # Fix clonezilla language Setup
 chroot . bash -c 'cd /usr/share/drbl/lang/bash/ && ln -s en_US en_US.UTF-8'
