@@ -69,6 +69,7 @@ cd ..
 # Move built files to their final dir
 mkdir -p ${davos_src}/var/lib/pulse2/imaging/davos/
 mv -f target/* ${davos_src}/var/lib/pulse2/imaging/davos/
+mv build/fs.squashfs ${davos_src}/var/lib/pulse2/imaging/davos/
 
 # Remove temp dir
 rm -r $tempdir
