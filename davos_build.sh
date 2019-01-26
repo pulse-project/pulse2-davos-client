@@ -58,7 +58,7 @@ cd squashfs-root
 ${davos_src}/deploy_filesystem.sh ${davos_src}
 
 # Copy kernel modules
-cp -a ../../kernel_build/_modules/* .
+cp -av ../../kernel_build/_modules/lib/* lib/
 
 cd ..
 # Recompress the new rootfs
