@@ -15,12 +15,19 @@ mount -t proc none ./proc
 mount devpts /dev/pts -t devpts
 cp /etc/resolv.conf ./etc/resolv.conf
 chroot . bash -c 'apt install clonezilla drbl partclone -y'
+
+chroot . bash -c 'apt install initramfs-tools -y'
+chroot . bash -c 'mkinitramfs -o initrd.img 4.19.0-siveos64'
+chroot . bash -c 'apt remove initramfs-tools'
+
+chroot . bash -c 'apt-get autoclean -y '
+chroot . bash -c 'apt-get clean -y '
+chroot . bash -c 'apt-get autoremove -y '
+chroot . bash -c 'find /var/lib/apt/lists/ -maxdepth 1 -type f -exec rm -v {} \;'
+
 # FIXME
 #chroot . bash -c 'adduser -D pulse'
 #chroot . bash -c 'echo -e "pulse\npulse" | passwd pulse'
-
-# Fix clonezilla language Setup
-chroot . bash -c 'cd /usr/share/drbl/lang/bash/ && ln -s en_US en_US.UTF-8'
 
 # Clean the FS before building the rootfs
 rm -f ./etc/resolv.conf
