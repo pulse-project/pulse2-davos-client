@@ -18,7 +18,7 @@ chroot . bash -c 'apt install clonezilla drbl partclone -y'
 
 chroot . bash -c 'apt install initramfs-tools -y'
 chroot . bash -c 'mkinitramfs -o initrd.img 4.19.0-siveos64'
-chroot . bash -c 'apt remove initramfs-tools'
+chroot . bash -c 'apt remove initramfs-tools -y'
 
 chroot . bash -c 'apt-get autoclean -y '
 chroot . bash -c 'apt-get clean -y '
