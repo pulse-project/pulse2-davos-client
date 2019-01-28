@@ -63,7 +63,7 @@ ${davos_src}/deploy_filesystem.sh ${davos_src}
 cd ..
 # Recompress the new rootfs
 mksquashfs squashfs-root/ fs.squashfs -noappend -always-use-fragments
-cp squashfs-root/initrd.img target/
+cp squashfs-root/initrd.img ../target/
 rm -r squashfs-root/
 cd ..
 
