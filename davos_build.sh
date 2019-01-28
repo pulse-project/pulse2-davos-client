@@ -59,10 +59,11 @@ ${davos_src}/deploy_filesystem.sh ${davos_src}
 
 # Copy kernel modules
 cp -av ../../kernel_build/_modules/lib/* lib/
-
+chroot . bash -c 'mkinitramfs -o initrd.img 4.19.0-siveos64'
 cd ..
 # Recompress the new rootfs
 mksquashfs squashfs-root/ fs.squashfs -noappend -always-use-fragments
+cp squashfs-root/initrd.img target/
 rm -r squashfs-root/
 cd ..
 
