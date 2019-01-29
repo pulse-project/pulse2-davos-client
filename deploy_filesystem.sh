@@ -15,6 +15,7 @@ mount -t proc none ./proc
 mount devpts /dev/pts -t devpts
 cp /etc/resolv.conf ./etc/resolv.conf
 chroot . bash -c 'apt install clonezilla drbl partclone -y'
+chroot . bash -c 'apt install fusioninventory-agent'
 
 chroot . bash -c 'apt install initramfs-tools -y'
 chroot . bash -c 'mkinitramfs -o initrd.img 4.19.0-siveos64'
