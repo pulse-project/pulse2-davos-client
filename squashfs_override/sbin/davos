@@ -1,0 +1,98 @@
+#!/usr/bin/env python
+
+#
+# (c) 2007-2015 Mandriva, http://www.mandriva.com/
+# (c) 2015-2016 Siveo, http://http://www.siveo.net
+#
+# $Id$
+#
+# This file is part of Pulse 2, http://www.siveo.net/solutions/pulse/
+#
+# MMC is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# MMC is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with MMC; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+#
+
+import signal
+from davos import davosManager
+from davos.image_saver import imageSaver
+from davos.image_restorer import imageRestorer
+from davos.bootservice_launcher import bootserviceLauncher
+from davos.inventory import Inventory
+import sys
+import argparse
+import time
+
+def signal_handler(signum, frame):
+    pass
+
+if __name__ == '__main__':
+
+    # Trap signals
+    #signal.signal(signal.SIGINT, signal_handler)
+    
+    # Setting argparse
+    parser = argparse.ArgumentParser(description='Davos imaging utility')
+
+    parser.add_argument('--select', help='Select image from list (restore mode)', action='store_true')
+    parser.add_argument('--create', dest='action', help='Image creation mode', action='store_const', const='SAVE_IMAGE')
+    parser.add_argument('--restore', dest='action', help='Image restoration mode', action='store_const', const='RESTORE_IMAGE')
+    parser.add_argument('--restore-multicast', dest='action', help='Image multicast restoration mode', action='store_const', const='RESTORE_IMAGE_MULTICAST')
+    parser.add_argument('--run-bootservice', dest='action', help='Run boot service mode', action='store_const', const='RUN_BOOTSERVICE')
+    parser.add_argument('--register', dest='action', help='Register machine', action='store_const', const='REGISTER')
+
+    # Parse input args
+    args = parser.parse_args()
+
+    # Initialize davos Manager
+    mgr = davosManager()
+
+    # Get davos action
+    if args.action:
+        action = args.action
+    else:
+        action = mgr.kernel_params['davos_action']
+
+    #imageRestorer(mgr).apply_convergence() 
+    #sys.exit(0)
+
+    if action == 'SAVE_IMAGE':    
+        d = imageSaver(mgr)
+        d.start()
+    elif action == 'RESTORE_IMAGE':
+        d = imageRestorer(mgr,'unicast')
+        if args.select and not d.select_image():
+            sys.exit(1)
+        d.start()
+    elif action == 'RESTORE_IMAGE_MULTICAST':
+        d = imageRestorer(mgr,'multicast')
+        if args.select and not d.select_image():
+            sys.exit(1)
+        d.start()
+    elif action == 'RUN_BOOTSERVICE':
+    	d = bootserviceLauncher(mgr)
+    	d.start()
+    elif action == 'REGISTER':
+        d = Inventory(mgr)
+        # Wait for machine registration
+        time.sleep(int(mgr.timereboot))
+    elif action == 'DISKLESS':
+        print 'Entering diskless mode'
+        print 'Go to the next console (CTRL+ALT+F2) and log on with root/root or pulse/pulse'
+        sys.exit(0)
+    else:
+        print 'Unknown action, leaving'
+        #mgr.runInShell('reboot')
+
+    # Reboot at the end
+    mgr.runInShell('reboot')
