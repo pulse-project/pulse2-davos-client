@@ -39,9 +39,6 @@ cp $file_name $tempdir
 cd $tempdir
 mkdir build target
 
-# Build the kernel to be used by davos
-${davos_src}/kernel_build.sh ${tempdir} ${kernel_version} ${kernel_base_url}
-
 # Move needed files to build dir and target dir
 #cp slitaz/boot/bzImage64 target/
 cp kernel_build/bzImage64 target/bzImage64
