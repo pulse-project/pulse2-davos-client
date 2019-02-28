@@ -17,13 +17,14 @@ davos_src="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 
 for file in filesystem.squashfs initrd vmlinuz; do
     if [[ -f /tmp/downloads/${file} ]]; then
-    echo "Copying ${file} from /tmp/downloads"
-    cp /tmp/downloads/${file} .
-else
-    full_url=${base_url}/${file}
-    echo "Downloading ${file} from ${full_url}"
-    curl -O ${full_url}
-fi
+        echo "Copying ${file} from /tmp/downloads"
+        cp /tmp/downloads/${file} .
+    else
+        full_url=${base_url}/${file}
+        echo "Downloading ${file} from ${full_url}"
+        curl -O ${full_url}
+    fi
+done
 
 # Entering temp directory
 cp $file_name $tempdir
