@@ -8,9 +8,6 @@ apt install curl -y
 version="buster"
 base_url="https://agents.siveo.net/squashfs"
 
-kernel_version="4.19"
-kernel_base_url="https://cdn.kernel.org/pub/linux/kernel/v4.x"
-
 # =============================================================
 # Don't edit anything below these lines
 # =============================================================
@@ -41,7 +38,6 @@ mkdir build target
 
 # Move needed files to build dir and target dir
 #cp slitaz/boot/bzImage64 target/
-cp kernel_build/bzImage64 target/bzImage64
 cp filesystem.squashfs  build/
 
 cd build
@@ -50,9 +46,6 @@ cd build
 unsquashfs filesystem.squashfs  && rm -fv ../filesystem.squashfs && rm -fv filesystem.squashfs
 cd squashfs-root
 #sed 's/MULTICAST_ALL_ADDR="224.0.0.1"/MULTICAST_ALL_ADDR="239.254.1.255"/' -i etc/drbl/drbl-ocs.conf
-
-# Copy kernel modules
-cp -av ../../kernel_build/_modules/lib/* lib/
 
 # Run deploy script to patch the filesystem
 ${davos_src}/deploy_filesystem.sh ${davos_src}
