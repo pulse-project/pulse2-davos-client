@@ -28,7 +28,6 @@ for file in filesystem.squashfs initrd vmlinuz; do
 done
 
 # Entering temp directory
-cp $file_name $tempdir
 cd $tempdir
 mkdir build target
 
