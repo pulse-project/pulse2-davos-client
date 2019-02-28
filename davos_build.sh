@@ -30,9 +30,9 @@ done
 # Entering temp directory
 cd $tempdir
 mkdir build target
+cp -fv {initrd, vmlinuz} target
 
 # Move needed files to build dir and target dir
-#cp slitaz/boot/bzImage64 target/
 cp filesystem.squashfs  build/
 
 cd build
@@ -54,7 +54,7 @@ cd ..
 
 # Move built files to their final dir
 mkdir -p ${davos_src}/var/lib/pulse2/imaging/davos/
-mv -f target/* ${davos_src}/var/lib/pulse2/imaging/davos/
+mv -fv target/* ${davos_src}/var/lib/pulse2/imaging/davos/
 mv build/fs.squashfs ${davos_src}/var/lib/pulse2/imaging/davos/
 
 # Remove temp dir
