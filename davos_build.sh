@@ -30,7 +30,7 @@ done
 # Entering temp directory
 cd $tempdir
 mkdir build target
-cp -fv {initrd, vmlinuz} target
+cp -fv {initrd,vmlinuz} target
 
 # Move needed files to build dir and target dir
 cp filesystem.squashfs  build/
