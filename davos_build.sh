@@ -12,23 +12,17 @@ base_url="https://agents.siveo.net/squashfs"
 # Don't edit anything below these lines
 # =============================================================
 
-file_name=filesystem.squashfs
-full_url=${base_url}/${file_name}
 tempdir=$(mktemp -d)
 davos_src="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 
-if [[ -f /tmp/downloads/${file_name} ]]; then
-    echo "Copying ${file_name} from /tmp/downloads"
-    cp /tmp/downloads/${file_name} .
+for file in filesystem.squashfs initrd vmlinuz; do
+    if [[ -f /tmp/downloads/${file} ]]; then
+    echo "Copying ${file} from /tmp/downloads"
+    cp /tmp/downloads/${file} .
 else
-    echo "Downloading Squashfs from ${full_url}"
+    full_url=${base_url}/${file}
+    echo "Downloading ${file} from ${full_url}"
     curl -O ${full_url}
-fi
-
-# Sometimes we get html instead of real file
-if [[ ! -f "$file_name" ||  $(stat -c%s "$file_name") -lt 1048576 ]]; then
-  echo "Failed to download the right file, check URLs"
-  exit 1
 fi
 
 # Entering temp directory
