@@ -17,10 +17,6 @@ cp /etc/resolv.conf ./etc/resolv.conf
 chroot . bash -c 'apt install clonezilla drbl partclone python-psutil python-tftpy python-netifaces iproute2 -y'
 chroot . bash -c 'apt install fusioninventory-agent'
 
-chroot . bash -c 'apt install initramfs-tools -y'
-chroot . bash -c 'mkinitramfs -o initrd.img 4.19.0-siveos64'
-chroot . bash -c 'apt remove initramfs-tools -y'
-
 chroot . bash -c 'apt-get autoclean -y '
 chroot . bash -c 'apt-get clean -y '
 chroot . bash -c 'apt-get autoremove -y '
