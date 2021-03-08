@@ -2,7 +2,7 @@
 set -e
 
 # Edit these line to update clonezilla version
-version="20180812-bionic"
+version="20210127-groovy"
 arch="amd64"
 base_url="http://free.nchc.org.tw/clonezilla-live/alternative/stable/"
 
