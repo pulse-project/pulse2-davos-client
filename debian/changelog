@@ -1,3 +1,21 @@
+pulse2-davos-client (0.50.0-0.20210525.groovy.2)  stable; urgency=low
+
+   * New groovy snapshot
+
+ -- Nicolas Lécureuil <nicolas.lecureuil@siveo.net> Fri, 21 Sep 2018 00:59:02 +0100
+
+pulse2-davos-client (0.50.0-0.20210525.groovy.1)  stable; urgency=low
+
+   * New groovy snapshot
+
+ -- Nicolas Lécureuil <nicolas.lecureuil@siveo.net> Fri, 21 Sep 2018 00:59:02 +0100
+
+pulse2-davos-client (0.50.0-0.20210107.groovy.3)  stable; urgency=low
+
+   * Fix davos python2 shebang
+
+ -- Nicolas Lécureuil <nicolas.lecureuil@siveo.net> Fri, 21 Sep 2018 00:59:02 +0100
+ 
 pulse2-davos-client (0.50.0-0.20210107.groovy.2)  stable; urgency=low
 
    * Fix linux-firmware install

@@ -19,9 +19,14 @@ mount -t proc none ./proc
 mount devpts /dev/pts -t devpts
 cp /etc/resolv.conf ./etc/resolv.conf
 chroot . bash -c 'mkdir /boot'
-chroot . bash -c 'apt-get update && apt-get -y install apt-utils python-minimal libpython-stdlib fusioninventory-agent dos2unix linux-firmware python-tftpy python-psutil efivar ash && exit'
-cp /root/partclone_0.2.89-4_amd64.deb /root/clonezilla_3.21.13-1_all.deb /root/drbl_2.20.11-1_all.deb .
-chroot . bash -c 'dpkg -i partclone_0.2.89-4_amd64.deb clonezilla_3.21.13-1_all.deb drbl_2.20.11-1_all.deb'
+chroot . bash -c 'apt remove nic-firmware -y'
+chroot . bash -c 'apt update && apt -y install apt-utils python2-minimal libpython2-stdlib fusioninventory-agent dos2unix linux-firmware efivar ash python-six python-pbr && exit'
+chroot . bash -c 'dpkg -l |grep six'
+#cp /root/partclone_0.2.89-4_amd64.deb /root/clonezilla_3.21.13-1_all.deb /root/drbl_2.20.11-1_all.deb .
+for i in python-funcsigs_1.0.2-4build1_all.deb python-ipaddress_1.0.17-1build1_all.deb python-tftpy_0.6.0-1_all.deb  python-mock_3.0.5-1build1_all.deb python-psutil_5.5.1-1ubuntu4_amd64.deb; do cp  /home/neoclust/Documents/Siveo/GIT/pulse2-davos-client/DEBS/$i . ; done
+chroot . bash -c 'dpkg -i python-funcsigs_1.0.2-4build1_all.deb python-ipaddress_1.0.17-1build1_all.deb python-tftpy_0.6.0-1_all.deb  python-mock_3.0.5-1build1_all.deb python-psutil_5.5.1-1ubuntu4_amd64.deb'
+
+#chroot . bash -c 'dpkg -i partclone_0.2.89-4_amd64.deb clonezilla_3.21.13-1_all.deb drbl_2.20.11-1_all.deb'
 chroot . bash -c 'ln -s /usr/lib/systemd/system/sshd.service /etc/systemd/system/multi-user.target.wants/sshd.service'
 chroot . bash -c 'rm -frv /opt/*'
 chroot . bash -c 'echo efivars >> /etc/modules'
