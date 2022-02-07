@@ -1,3 +1,9 @@
+pulse2-davos-client (0.51.0-0.20220118.jammy.1)  stable; urgency=low
+
+   * New jammy snapshot
+
+ -- Nicolas Lécureuil <nicolas.lecureuil@siveo.net> Fri, 21 Sep 2018 00:59:02 +0100
+
 pulse2-davos-client (0.50.0-0.20210525.groovy.2)  stable; urgency=low
 
    * New groovy snapshot

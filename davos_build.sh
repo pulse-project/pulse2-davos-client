@@ -2,7 +2,7 @@
 set -e
 
 # Edit these line to update clonezilla version
-version="20210717-hirsute"
+version="20220118-jammy"
 arch="amd64"
 base_url="http://free.nchc.org.tw/clonezilla-live/alternative/testing/$version/"
 
