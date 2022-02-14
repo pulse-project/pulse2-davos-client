@@ -23,6 +23,7 @@
 import os
 import subprocess
 
+
 class bootserviceLauncher(object):
 
     image_uuid = None
@@ -30,7 +31,6 @@ class bootserviceLauncher(object):
     def __init__(self, manager):
 
         self.manager = manager
-
 
     def start(self):
 
@@ -51,6 +51,3 @@ class bootserviceLauncher(object):
     def run_script(self):
         self.setlibpostinstVars()
         subprocess.call('davos_bootservice')
-        
-
-

@@ -19,11 +19,13 @@
 # You should have received a copy of the GNU General Public License
 # along with Pulse 2.  If not, see <http://www.gnu.org/licenses/>.
 
-import os, subprocess
+import os
+import subprocess
 import logging
 from log import ColoredFormatter
 from davos.xmlrpc_client import pkgServerProxy
 import re
+
 
 class davosManager(object):
 
@@ -97,26 +99,27 @@ class davosManager(object):
 
     def initLogger(self):
         self.logger = logging.getLogger('davos')
-        self.log_level = level = logging.INFO #logging.DEBUG
+        self.log_level = level = logging.INFO  # logging.DEBUG
 
         # Init logger
 
         fhd = logging.FileHandler('/var/log/davos.log')
-        fhd.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+        fhd.setFormatter(logging.Formatter(
+            '%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
         fhd.setLevel(level)
         self.logger.addHandler(fhd)
 
         if self.debug_mode:
             hdlr2 = logging.StreamHandler()
-            hdlr2.setFormatter(ColoredFormatter("%(levelname)-18s %(message)s"))
+            hdlr2.setFormatter(ColoredFormatter(
+                "%(levelname)-18s %(message)s"))
             hdlr2.setLevel(level)
             self.logger.addHandler(hdlr2)
-        
+
         self.logger.setLevel(level)
 
-    
     def getKernelParams(self):
-        
+
         self.logger.debug('Reading kernel params')
 
         self.kernel_params = {}
@@ -129,9 +132,8 @@ class davosManager(object):
                 else:
                     key, value = item, None
                 self.kernel_params[key] = value
-        
-        self.logger.debug('Got kernel params %s', str(self.kernel_params))
 
+        self.logger.debug('Got kernel params %s', str(self.kernel_params))
 
     def runInShell(self, cmd, *args):
         # If cmd is str and args are not empty remplace them (format)
@@ -141,18 +143,20 @@ class davosManager(object):
             cmd = [cmd]
 
         self.logger.debug('Running %s', cmd)
-        process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        process = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            shell=True)
         out, err = process.communicate()
 
         self.logger.debug('Error code: %d', process.returncode)
         self.logger.debug('Output: %s', out)
-        
-        return out.strip(), err.strip(), process.returncode
 
+        return out.strip(), err.strip(), process.returncode
 
     def isEmptyDir(self, path):
         return os.listdir(path) == []
-
 
     def getHostInfo(self):
         self.logger.info('Asking for hostinfo')
@@ -173,15 +177,14 @@ class davosManager(object):
         self.host_entity = self.host_data['entity']
         self.logger.info('Got entity: %s', self.host_entity)
 
-
     def getClonezillaParams(self):
         """
         get Clonezilla parameters for the machine
         """
         self.logger.info('Asking for Clonezilla parameters')
 
-        self.clonezilla_params = self.rpc.imaging_api.getClonezillaParamsForTarget(self.host_uuid)
-
+        self.clonezilla_params = self.rpc.imaging_api.getClonezillaParamsForTarget(
+            self.host_uuid)
 
     def mountNFSShares(self):
         # Server address
@@ -193,7 +196,9 @@ class davosManager(object):
             os.makedirs(local_dir)
         if self.isEmptyDir(local_dir):
             self.logger.info('Mounting %s NFS Share', local_dir)
-            o, e, ec = self.runInShell('mount %s:%s %s' % (server, self.nfs_share_masters, local_dir))
+            o, e, ec = self.runInShell(
+                'mount %s:%s %s' %
+                (server, self.nfs_share_masters, local_dir))
             if ec != 0:
                 self.logger.error('Cannot mount %s Share', local_dir)
                 self.logger.error('Output: %s', e)
@@ -204,7 +209,9 @@ class davosManager(object):
             os.mkdir(local_dir)
         if self.isEmptyDir(local_dir):
             self.logger.info('Mounting %s NFS Share', local_dir)
-            o, e, ec = self.runInShell('mount %s:%s %s' % (server, self.nfs_share_postinst, local_dir))
+            o, e, ec = self.runInShell(
+                'mount %s:%s %s' %
+                (server, self.nfs_share_postinst, local_dir))
             if ec != 0:
                 self.logger.error('Cannot mount %s Share', local_dir)
                 self.logger.error('Output: %s', e)
@@ -214,23 +221,26 @@ class davosManager(object):
         if self.isEmptyDir('/home/partimag'):
             self.logger.debug('Removing dir: %s', '/home/partimag')
             os.rmdir('/home/partimag')
-   
+
             # Create a symlink to /masters remote directory
-            self.logger.debug('Creating symlink to: %s', '/imaging_server/masters')
+            self.logger.debug(
+                'Creating symlink to: %s',
+                '/imaging_server/masters')
             os.symlink('/imaging_server/masters', '/home/partimag')
 
-    def is_valid_hostname(self,hostname):
+    def is_valid_hostname(self, hostname):
         """
         Check that hostname is valid
         """
         if len(hostname) > 255:
             return False
         if hostname[-1] == ".":
-            hostname = hostname[:-1] # strip exactly one dot from the right, if present
-        allowed = re.compile("(?!-)[A-Z\d-]{1,63}(?<!-)$", re.IGNORECASE)
+            # strip exactly one dot from the right, if present
+            hostname = hostname[:-1]
+        allowed = re.compile("(?!-)[A-Z\\d-]{1,63}(?<!-)$", re.IGNORECASE)
         return all(allowed.match(x) for x in hostname.split("."))
 
-    def confirm(self,response):
+    def confirm(self, response):
         """
         Ask user to enter Y or N (case-insensitive).
         :return: True if the answer is Y.
@@ -238,7 +248,9 @@ class davosManager(object):
         """
         answer = ""
         while answer not in ["y", "n"]:
-            answer = raw_input("You have entered %s. Is this correct [Y/N]? " % response).lower()
+            answer = raw_input(
+                "You have entered %s. Is this correct [Y/N]? " %
+                response).lower()
         return answer == "y"
 
     def setHostname(self):

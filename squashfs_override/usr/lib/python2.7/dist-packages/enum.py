@@ -107,6 +107,7 @@ class EnumImmutableError(TypeError, EnumException):
 
 def _comparator(func):
     """ Decorator for EnumValue rich comparison methods. """
+
     def comparator_wrapper(self, other):
         try:
             assert self.enumtype == other.enumtype
@@ -118,6 +119,7 @@ def _comparator(func):
     comparator_wrapper.__name__ = func.__name__
     comparator_wrapper.__doc__ = getattr(float, func.__name__).__doc__
     return comparator_wrapper
+
 
 class EnumValue(object):
     """ A specific value of an enumerated type. """

@@ -17,7 +17,8 @@ class Inventory(object):
         self.manager = manager
         self.disk = 'sda'
         self.logger.info('Running inventory')
-        o, e, ec = manager.runInShell('fusioninventory-agent --local /tmp --no-category=software,user,process,environment,controller,memory,drive,usb,slot,input,port')
+        o, e, ec = manager.runInShell(
+            'fusioninventory-agent --local /tmp --no-category=software,user,process,environment,controller,memory,drive,usb,slot,input,port')
         o2, e2, ec = manager.runInShell('mv /tmp/*.ocs /tmp/inventory.xml')
 
         # Check if an error occured
@@ -31,13 +32,17 @@ class Inventory(object):
 
         # Replace ARCHNAME, OSNAME and OSCOMMENTS
         self.editNodeText('ARCHNAME', 'davos-imaging-diskless-env')
-        self.editNodeText('OSNAME', 'Unknown operating system (PXE network boot inventory)')
-        self.editNodeText('FULL_NAME', 'Unknown operating system (PXE network boot inventory)')
+        self.editNodeText(
+            'OSNAME',
+            'Unknown operating system (PXE network boot inventory)')
+        self.editNodeText(
+            'FULL_NAME',
+            'Unknown operating system (PXE network boot inventory)')
         timestamp = time.ctime()
         self.editNodeText('OSCOMMENTS', 'Inventory generated on ' + timestamp)
 
         # If we have a detected OS, we inventory OS and SOFT
-        #if self.OS:
+        # if self.OS:
         #   getattr(self, self.OS + 'Handler').__call__()
 
         # Find mac address of connected interface
@@ -47,10 +52,20 @@ class Inventory(object):
             stats[nicname] = pnic[nicname].bytes_sent
         self.interface = max(stats, key=stats.get)
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        info = fcntl.ioctl(sock.fileno(), 0x8927,  struct.pack('256s', self.interface[:15]))
-        self.macaddress = ':'.join(['%02x' % ord(char) for char in info[18:24]])
-        self.ipaddress = socket.inet_ntoa(fcntl.ioctl(sock.fileno(), 0x8915, struct.pack('256s', self.interface[:15]))[20:24])
-        self.netmask = socket.inet_ntoa(fcntl.ioctl(sock.fileno(), 0x891b, struct.pack('256s', self.interface))[20:24])
+        info = fcntl.ioctl(sock.fileno(), 0x8927,
+                           struct.pack('256s', self.interface[:15]))
+        self.macaddress = ':'.join(['%02x' % ord(char)
+                                   for char in info[18:24]])
+        self.ipaddress = socket.inet_ntoa(fcntl.ioctl(
+            sock.fileno(), 0x8915, struct.pack('256s', self.interface[:15]))[20:24])
+        self.netmask = socket.inet_ntoa(
+            fcntl.ioctl(
+                sock.fileno(),
+                0x891b,
+                struct.pack(
+                    '256s',
+                    self.interface))[
+                20:24])
 
         # Add the connected network interface
         self.addNetwork()
@@ -64,15 +79,25 @@ class Inventory(object):
         filehandler.write(data)
         filehandler.close()
         tftpclient = tftpy.TftpClient(manager.tftp_ip, 69)
-        tftpclient.upload('/' + manager.dump_path + '/' + self.macaddress + '.xml', '/tmp' + self.macaddress + '.xml')
-
+        tftpclient.upload(
+            '/' +
+            manager.dump_path +
+            '/' +
+            self.macaddress +
+            '.xml',
+            '/tmp' +
+            self.macaddress +
+            '.xml')
 
     @property
     def OS(self):
         # A dirty OS detector but ... we don't have time
-        win, e, ec = self.manager.runInShell('find /mnt -maxdepth 1 -type d -iname windows')
-        etc, e, ec = self.manager.runInShell('find /mnt -maxdepth 1 -type d -iname etc')
-        disk_info, e, ec = self.manager.runInShell('fdisk /dev/%s -l', self.disk)
+        win, e, ec = self.manager.runInShell(
+            'find /mnt -maxdepth 1 -type d -iname windows')
+        etc, e, ec = self.manager.runInShell(
+            'find /mnt -maxdepth 1 -type d -iname etc')
+        disk_info, e, ec = self.manager.runInShell(
+            'fdisk /dev/%s -l', self.disk)
 
         # If we get a result, it's a windows
         if win.strip() and 'NTFS' in disk_info:
@@ -90,24 +115,38 @@ class Inventory(object):
         # ======== OS SECTION ===============================================
 
         cv_dict = {}
-        for entry in reg.open('Microsoft\\Windows NT\\CurrentVersion').values():
+        for entry in reg.open(
+                'Microsoft\\Windows NT\\CurrentVersion').values():
             cv_dict[entry.name()] = entry.value()
 
         if 'ProductName' in cv_dict:
             self.editNodeText('OSNAME', 'Microsoft ' + cv_dict['ProductName'])
-            self.editNodeText('FULL_NAME', 'Microsoft ' + cv_dict['ProductName'])
+            self.editNodeText(
+                'FULL_NAME',
+                'Microsoft ' +
+                cv_dict['ProductName'])
 
         if 'CSDVersion' in cv_dict:
             self.editNodeText('OSCOMMENTS', cv_dict['CSDVersion'])
-            self.editNodeText('SERVICE_PACK', cv_dict['CSDVersion'], 'OPERATINGSYSTEM')
+            self.editNodeText(
+                'SERVICE_PACK',
+                cv_dict['CSDVersion'],
+                'OPERATINGSYSTEM')
 
         if 'CurrentVersion' in cv_dict and 'CurrentBuild' in cv_dict:
-            self.editNodeText('OSVERSION', cv_dict['CurrentVersion'] + '.' + cv_dict['CurrentBuild'])
+            self.editNodeText(
+                'OSVERSION',
+                cv_dict['CurrentVersion'] +
+                '.' +
+                cv_dict['CurrentBuild'])
             self.editNodeText('KERNEL_VERSION', '6.1.7601')
 
         self.editNodeText('KERNEL_NAME', 'MSWin32')
         self.editNodeText('NAME', 'Windows', 'OPERATINGSYSTEM')
-        self.editNodeText('PUBLISHER', 'Microsoft Corporation', 'OPERATINGSYSTEM')
+        self.editNodeText(
+            'PUBLISHER',
+            'Microsoft Corporation',
+            'OPERATINGSYSTEM')
 
         if 'BuildLabEx' in cv_dict and 'amd64' in cv_dict['BuildLabEx']:
             self.editNodeText('ARCH', '64-bit', 'OPERATINGSYSTEM')
@@ -116,15 +155,18 @@ class Inventory(object):
 
         # ======== SOFTWARE SECTION =========================================
 
-        soft_keys = reg.open('Microsoft\\Windows\\CurrentVersion\\Uninstall').subkeys()
-        soft_keys+= reg.open('Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall').subkeys()
+        soft_keys = reg.open(
+            'Microsoft\\Windows\\CurrentVersion\\Uninstall').subkeys()
+        soft_keys += reg.open(
+            'Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall').subkeys()
 
         for key in soft_keys:
             soft_dict = {}
             for entry in key.values():
                 try:
-                    soft_dict[entry.name()] = entry.value().encode('ascii', 'ignore')
-                except:
+                    soft_dict[entry.name()] = entry.value().encode(
+                        'ascii', 'ignore')
+                except BaseException:
                     soft_dict[entry.name()] = entry.value()
 
             soft = {}
@@ -154,16 +196,22 @@ class Inventory(object):
 
             self.addSoftware(soft)
 
-
-
     def linuxHandler(self):
         pass
 
     def addSoftware(self, data):
         cont = self.dom.getElementsByTagName('CONTENT')[0]
         softnode = self.dom.createElement('SOFTWARES')
-        for k in ['ARCH', 'FROM', 'GUID', 'NAME', 'PUBLISHER', 'UNINSTALL_STRING', 'URL_INFO_ABOUT', 'VERSION']:
-            if not k in data:
+        for k in [
+            'ARCH',
+            'FROM',
+            'GUID',
+            'NAME',
+            'PUBLISHER',
+            'UNINSTALL_STRING',
+            'URL_INFO_ABOUT',
+                'VERSION']:
+            if k not in data:
                 continue
             elem = self.dom.createElement(k)
             txt = self.dom.createTextNode(data[k])
@@ -227,5 +275,5 @@ class Inventory(object):
         try:
             node = parent.getElementsByTagName(nodename)[0]
             node.firstChild.replaceWholeText(value)
-        except:
+        except BaseException:
             self.logger.warning('Cannot set %s to %s', nodename, value)

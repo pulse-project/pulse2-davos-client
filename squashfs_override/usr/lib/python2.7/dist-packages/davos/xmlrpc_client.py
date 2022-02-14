@@ -1,10 +1,11 @@
-import ssl, xmlrpclib
+import ssl
+import xmlrpclib
+
 
 class pkgServerProxy(object):
 
-
     def __init__(self, ip):
-        
+
         # Creating SSL context
         self.ctx = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
         self.ctx.verify_mode = ssl.CERT_NONE
@@ -18,5 +19,3 @@ class pkgServerProxy(object):
         # Return the corresponding api proxy according to attr
         url = self.base_url + attr_name + '/'
         return xmlrpclib.ServerProxy(url, context=self.ctx)
-
-

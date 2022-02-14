@@ -10,7 +10,7 @@
 # 2. Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in the
 #    documentation and/or other materials provided with the distribution.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY AUTHORS AND CONTRIBUTORS ``AS IS'' AND
 # ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 # IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -25,16 +25,20 @@
 
 from __future__ import print_function
 
-import sys, os
+import sys
+import os
 import errno
 import re
 import subprocess
 import fcntl
 
+
 class DebconfError(Exception):
     pass
 
+
 LOW, MEDIUM, HIGH, CRITICAL = 'low', 'medium', 'high', 'critical'
+
 
 class Debconf:
 
@@ -59,7 +63,7 @@ class Debconf:
 
     def setCommand(self, command):
         setattr(self, command,
-               lambda *args, **kw: self.command(command, *args, **kw))
+                lambda *args, **kw: self.command(command, *args, **kw))
 
     def command(self, command, *params):
         command = command.upper()
@@ -147,15 +151,18 @@ class DebconfCommunicator(Debconf, object):
 
 
 if ('DEBCONF_USE_CDEBCONF' in os.environ and
-    os.environ['DEBCONF_USE_CDEBCONF'] != ''):
+        os.environ['DEBCONF_USE_CDEBCONF'] != ''):
     _frontEndProgram = '/usr/lib/cdebconf/debconf'
 else:
     _frontEndProgram = '/usr/share/debconf/frontend'
 
+
 def runFrontEnd():
     if 'DEBIAN_HAS_FRONTEND' not in os.environ:
-        os.environ['PERL_DL_NONLAZY']='1'
-        os.execv(_frontEndProgram, [_frontEndProgram, sys.executable]+sys.argv)
+        os.environ['PERL_DL_NONLAZY'] = '1'
+        os.execv(
+            _frontEndProgram, [
+                _frontEndProgram, sys.executable] + sys.argv)
 
 
 if __name__ == '__main__':

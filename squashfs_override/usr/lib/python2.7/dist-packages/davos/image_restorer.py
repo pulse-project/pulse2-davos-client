@@ -23,10 +23,12 @@ import os
 import subprocess
 import json
 import time
-import urllib, urllib2
+import urllib
+import urllib2
 from davos.inventory import Inventory
 from time import sleep
 from dialog import Dialog
+
 
 class imageRestorer(object):
 
@@ -50,34 +52,44 @@ class imageRestorer(object):
     def select_image(self):
         def _get_title(image_uuid):
             try:
-                _json = json.loads(open('/home/partimag/%s/davosInfo.json' % image_uuid, 'r').read())
+                _json = json.loads(
+                    open(
+                        '/home/partimag/%s/davosInfo.json' %
+                        image_uuid,
+                        'r').read())
                 return _json['title']
-            except:
+            except BaseException:
                 return image_uuid
         available_images = self.available_images
         d = Dialog(dialog="dialog")
-        choices = [(str(available_images.index(x) + 1), _get_title(x)) for x in available_images]
-        code, tag = d.menu("Select image to restore from:", choices=choices, backtitle="Pulse Imaging Client")
+        choices = [(str(available_images.index(x) + 1), _get_title(x))
+                   for x in available_images]
+        code, tag = d.menu("Select image to restore from:",
+                           choices=choices, backtitle="Pulse Imaging Client")
         if code != 0:
             # Leave (no image selected)
             return False
         self.image_uuid = available_images[code - 1]
         return True
 
-
     def check_image(self):
 
         # Check if the image exists or not
         if not os.path.isdir('/home/partimag/' + self.image_uuid):
             d = Dialog(dialog="dialog")
-            d.msgbox("Could not find image on server", backtitle="Pulse Imaging Client")
+            d.msgbox(
+                "Could not find image on server",
+                backtitle="Pulse Imaging Client")
             raise Exception('Could not find image on server')
         # Check if image is compatible (davos)
-        if not os.path.isfile('/home/partimag/%s/davosInfo.json' % self.image_uuid):
+        if not os.path.isfile(
+            '/home/partimag/%s/davosInfo.json' %
+                self.image_uuid):
             d = Dialog(dialog="dialog")
-            d.msgbox("Selected image is not compatible with this backend, please convert this image to the correct format.", backtitle="Pulse Imaging Client")
+            d.msgbox(
+                "Selected image is not compatible with this backend, please convert this image to the correct format.",
+                backtitle="Pulse Imaging Client")
             raise Exception('Could not find image on server')
-
 
     def start(self):
 
@@ -99,12 +111,18 @@ class imageRestorer(object):
             self.device = 'sda'
         elif os.path.exists('/dev/hda'):
             self.device = 'hda'
+        elif os.path.exists('/dev/vda'):
+            self.device = 'vda'
 
         # Start the image restore
         if self.mode == 'multicast':
-            error_code = subprocess.call('yes 2>/dev/null| /usr/sbin/ocs-sr %s --mcast-port 2232 multicast_restoredisk %s %s 2>&1 1>/dev/null | tee /var/log/davos_restorer.log' % (self.manager.clonezilla_params['clonezilla_restorer_params'], self.image_uuid, self.device), shell=True)
+            error_code = subprocess.call(
+                'yes 2>/dev/null| /usr/sbin/ocs-sr %s --mcast-port 2232 multicast_restoredisk %s %s 2>&1 1>/dev/null | tee /var/log/davos_restorer.log' %
+                (self.manager.clonezilla_params['clonezilla_restorer_params'], self.image_uuid, self.device), shell=True)
         else:
-            error_code = subprocess.call('yes 2>/dev/null| /usr/sbin/ocs-sr %s restoredisk %s %s 2>&1 1>/dev/null | tee /var/log/davos_restorer.log' % (self.manager.clonezilla_params['clonezilla_restorer_params'], self.image_uuid, self.device), shell=True)
+            error_code = subprocess.call(
+                'yes 2>/dev/null| /usr/sbin/ocs-sr %s restoredisk %s %s 2>&1 1>/dev/null | tee /var/log/davos_restorer.log' %
+                (self.manager.clonezilla_params['clonezilla_restorer_params'], self.image_uuid, self.device), shell=True)
 
         # Save image JSON and LOG
         current_ts = time.strftime("%Y%m%d%H%M%S")
@@ -112,14 +130,21 @@ class imageRestorer(object):
         image_dir = os.path.join('/home/partimag/', self.image_uuid) + '/'
 
         if error_code != 0:
-            self.logger.warning('An error was encountered while restoring image, check davos_restorer.log for more details.')
-            saver_log_path = os.path.join(image_dir, 'davos_restorer-%s.log' % (current_ts) )
-            open(saver_log_path, 'w').write(open('/var/log/davos_restorer.log', 'r').read())
+            self.logger.warning(
+                'An error was encountered while restoring image, check davos_restorer.log for more details.')
+            saver_log_path = os.path.join(
+                image_dir, 'davos_restorer-%s.log' %
+                (current_ts))
+            open(
+                saver_log_path,
+                'w').write(
+                open(
+                    '/var/log/davos_restorer.log',
+                    'r').read())
             time.sleep(15)
 
         # RUN POST INST STEP
         self.run_postimaging()
-
 
         # Run post-imaging convergence
         # self.apply_convergence()
@@ -138,15 +163,16 @@ class imageRestorer(object):
     def apply_convergence(self):
 
         # Send the fresh restored computer inventory
-        #Inventory(self.manager)
+        # Inventory(self.manager)
 
         # Waiting for machine registration
-        #sleep(30000)
+        # sleep(30000)
 
         rpc = self.rpc
 
         # Get actives convergences for host
-        convergences = rpc.imaging_api.getActiveConvergenceForHost(self.manager.host_uuid)
+        convergences = rpc.imaging_api.getActiveConvergenceForHost(
+            self.manager.host_uuid)
 
         # If no active convergence, leave
         if not convergences:
@@ -158,21 +184,28 @@ class imageRestorer(object):
 
         # Extract package ids
         pids = [cv['pid'] for cv in convergences]
-        downloads = {pid:None for pid in pids}
+        downloads = {pid: None for pid in pids}
 
         # For each pid, search corresponding mirror
         for pid in pids:
             for m in mirrors:
                 try:
-                    base_url = 'https://%s:9990%s_files/%s/' % (self.manager.server, m, pid)
-                    res = urllib2.urlopen(base_url + 'MD5SUMS', context=rpc.ctx)
-                    files = [l[32:].strip() for l in res.read().strip().split('\n')]
+                    base_url = 'https://%s:9990%s_files/%s/' % (
+                        self.manager.server, m, pid)
+                    res = urllib2.urlopen(
+                        base_url + 'MD5SUMS', context=rpc.ctx)
+                    files = [l[32:].strip()
+                             for l in res.read().strip().split('\n')]
 
-                    json_data = json.loads(urllib2.urlopen(base_url + 'conf.json', context=rpc.ctx).read())
+                    json_data = json.loads(
+                        urllib2.urlopen(
+                            base_url + 'conf.json',
+                            context=rpc.ctx).read())
 
-                    downloads[pid] = {'mirror': m, 'files': files, 'json': json_data}
+                    downloads[pid] = {
+                        'mirror': m, 'files': files, 'json': json_data}
                     break
-                except Exception, e:
+                except Exception as e:
                     self.logger.debug('Unable to locate %s in %s', pid, m)
                     self.logger.debug('Download error: %s', str(e))
 
@@ -198,7 +231,8 @@ class imageRestorer(object):
         for pid, info in downloads.iteritems():
             # If no mirror found, skip this pid
             if info is None:
-                self.logger.warning('Cannot get a valid mirror for package %s', pid)
+                self.logger.warning(
+                    'Cannot get a valid mirror for package %s', pid)
                 continue
 
             # Creating a directory for a package
@@ -223,14 +257,17 @@ class imageRestorer(object):
             # Download package files
             for fname in info['files']:
                 try:
-                    url = 'https://%s:9990%s_files/%s/%s' % (self.manager.server, info['mirror'], pid, urllib.quote(fname))
+                    url = 'https://%s:9990%s_files/%s/%s' % (
+                        self.manager.server, info['mirror'], pid, urllib.quote(fname))
 
-                    self.logger.info('Downloading %s file for %s package', fname, pkg_name)
+                    self.logger.info(
+                        'Downloading %s file for %s package', fname, pkg_name)
                     res = urllib2.urlopen(url, context=rpc.ctx)
                     with open(os.path.join(pkg_path, fname), "wb") as f:
                         f.write(res.read())
-                except Exception, e:
-                    self.logger.error('Unable to download %s for %s package', fname, pkg_name)
+                except Exception as e:
+                    self.logger.error(
+                        'Unable to download %s for %s package', fname, pkg_name)
                     self.logger.error(str(e))
                     break
 
@@ -239,12 +276,14 @@ class imageRestorer(object):
             f.write('\r\n'.join(__global_command))
 
         # Add group policy
-        #self.setlibpostinstVars()
+        # self.setlibpostinstVars()
         #libpostinstPath = '/opt/lib/libpostinst.sh'
-        #subprocess.call('bash -c \'source %s; AddNewStartupGroupPolicy "C:\\%s\\__install.bat"\''
+        # subprocess.call('bash -c \'source %s; AddNewStartupGroupPolicy "C:\\%s\\__install.bat"\''
         #    % (libpostinstPath, self.image_uuid),
         #    shell=True)
         reghive = '/mnt/Windows/System32/config/SOFTWARE'
         regfile = '/usr/lib/python2.7/dist-packages/davos/o.reg'
 
-        self.manager.runInShell('reged -I -C %(reghive)s PRE %(regfile)s' % locals())
+        self.manager.runInShell(
+            'reged -I -C %(reghive)s PRE %(regfile)s' %
+            locals())

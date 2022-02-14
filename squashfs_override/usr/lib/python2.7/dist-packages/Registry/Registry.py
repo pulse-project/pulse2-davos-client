@@ -40,6 +40,7 @@ RegFileTime = 0x0010
 
 DEVPROP_MASK_TYPE = 0x00000FFF
 
+
 class HiveType(Enum):
     UNKNOWN = ""
     NTUSER = "ntuser.dat"
@@ -54,9 +55,11 @@ class HiveType(Enum):
     SCHEMA = "schema.dat"
 
 
-class RegistryKeyHasNoParentException(RegistryParse.RegistryStructureDoesNotExist):
+class RegistryKeyHasNoParentException(
+        RegistryParse.RegistryStructureDoesNotExist):
     """
     """
+
     def __init__(self, value):
         """
         Constructor.
@@ -69,9 +72,11 @@ class RegistryKeyHasNoParentException(RegistryParse.RegistryStructureDoesNotExis
         return "Registry key has no parent key: %s" % (self._value)
 
 
-class RegistryKeyNotFoundException(RegistryParse.RegistryStructureDoesNotExist):
+class RegistryKeyNotFoundException(
+        RegistryParse.RegistryStructureDoesNotExist):
     """
     """
+
     def __init__(self, value):
         """
 
@@ -83,9 +88,12 @@ class RegistryKeyNotFoundException(RegistryParse.RegistryStructureDoesNotExist):
     def __str__(self):
         return "Registry key not found: %s" % (self._value)
 
-class RegistryValueNotFoundException(RegistryParse.RegistryStructureDoesNotExist):
+
+class RegistryValueNotFoundException(
+        RegistryParse.RegistryStructureDoesNotExist):
     """
     """
+
     def __init__(self, value):
         """
 
@@ -97,12 +105,14 @@ class RegistryValueNotFoundException(RegistryParse.RegistryStructureDoesNotExist
     def __str__(self):
         return "Registry value not found: %s" % (self._value)
 
+
 class RegistryValue(object):
     """
     This is a high level structure for working with the Windows Registry.
-    It represents the 3-tuple of (name, type, value) associated with 
+    It represents the 3-tuple of (name, type, value) associated with
       a registry value.
     """
+
     def __init__(self, vkrecord):
         self._vkrecord = vkrecord
 
@@ -114,7 +124,7 @@ class RegistryValue(object):
         if self._vkrecord.has_name():
             return self._vkrecord.name()
         else:
-            return  "(default)"
+            return "(default)"
 
     def value_type(self):
         """
@@ -170,6 +180,7 @@ class RegistryKey(object):
     A RegistryKey may have a set of values associated with it,
       as well as a last modified timestamp.
     """
+
     def __init__(self, nkrecord):
         """
 
@@ -237,7 +248,7 @@ class RegistryKey(object):
     def subkey(self, name):
         """
         Return the subkey with a given name as a RegistryKey.
-        Raises RegistryKeyNotFoundException if the subkey with 
+        Raises RegistryKeyNotFoundException if the subkey with
           the given name does not exist.
         """
         if self._nkrecord.subkey_number() == 0:
@@ -256,7 +267,8 @@ class RegistryKey(object):
         empty list is returned.
         """
         try:
-            return [RegistryValue(v) for v in self._nkrecord.values_list().values()]
+            return [RegistryValue(v)
+                    for v in self._nkrecord.values_list().values()]
         except RegistryParse.RegistryStructureDoesNotExist:
             return []
 
@@ -285,24 +297,25 @@ class RegistryKey(object):
 
         (immediate, _, future) = path.partition("\\")
         return self.subkey(immediate).find_key(future)
-        
+
     def values_number(self):
-    	"""
-    	Return the number of values associated with this key
-    	"""
-    	return self._nkrecord.values_number()
-    	
+        """
+        Return the number of values associated with this key
+        """
+        return self._nkrecord.values_number()
+
     def subkeys_number(self):
-    	"""
-    	Return the number of subkeys associated with this key
-    	"""
-    	return self._nkrecord.subkey_number()
+        """
+        Return the number of subkeys associated with this key
+        """
+        return self._nkrecord.subkey_number()
 
 
 class Registry(object):
     """
     A class for parsing and reading from a Windows Registry file.
     """
+
     def __init__(self, filelikeobject):
         """
         Constructor.
@@ -369,12 +382,14 @@ class Registry(object):
         # level? is this the name of the hive?
         return RegistryKey(self._regf.first_key()).find_key(path)
 
+
 def print_all(key):
     if len(key.subkeys()) == 0:
         print(key.path())
     else:
         for k in key.subkeys():
             print_all(k)
+
 
 if __name__ == '__main__':
     r = Registry(sys.argv[1])
