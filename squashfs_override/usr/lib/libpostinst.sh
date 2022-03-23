@@ -31,13 +31,13 @@ Strip2 ()
 
 #
 # Copy a sysprep configuration to file and substitute the hostname
-# Example: CopySysprepInf /revoinfo/sysprep.inf
+# Example: CopySysprep /revoinfo/sysprep.inf
 # If the extension is .xml it assumes that the target is Windows Vista/Seven/2008
 # If the extension is .inf the file will be copied to c:\Sysprep.inf (Windows XP)
 #
-CopySysprepInf ()
+CopySysprep ()
 {
-    SYSPREP_FILE=$1
+    SYSPREP_FILE=/opt/sysprep/$1
     WINDIR=$(find /mnt -maxdepth 1 -type d -iname windows)
     WINSYSDIR=$(find $WINDIR -maxdepth 1 -type d -iname system32)
 
@@ -209,7 +209,7 @@ MountSystem ()
   # Number of partitions
   partnumber=`grep '[a-z]\+[0-9]\+$' /proc/partitions | grep -v ram | grep -v loop | wc -l | sed 's/ //g'`
   for num in `seq 1 ${partnumber}`; do
-    Mount ${num}
+    Mount ${num} &>/dev/null
     # Does it looks like being a Windows ?
     if [[ -n `find /mnt -maxdepth 1 -type d -iname windows` ]]; then
       echo "*** INFO: WINDOWS found on partition number ${num}"
@@ -441,4 +441,35 @@ del "%~f0"
 EOF
     cp /opt/winutils/newsid.exe /mnt/
     AddNewStartupGroupPolicy "C:\\mandriva_pulse2_newsidandname.bat"
+}
+
+CopyPulseAgent (){
+    mkdir -p /mnt/Windows/Setup/Scripts/
+    if [ -z "$1" ]; then
+        cp /opt/winutils/Pulse-Agent-windows-FULL-latest.exe /mnt/Windows/Setup/Scripts/
+        echo "Pulse-Agent-windows-FULL-latest.exe will be installed"
+    else
+        cp /opt/winutils/$1 /mnt/Windows/Setup/Scripts/
+        echo "$1 will be installed"
+    fi
+}
+
+CopyRunAtOnce (){
+    mkdir -p /mnt/Windows/Setup/Scripts/
+    if [ -z "$1" ]; then
+        cp /opt/winutils/SetupComplete.cmd /mnt/Windows/Setup/Scripts/
+        echo "winutils/SetupComplete.cmd will be installed"
+    else
+        cp /opt/winutils/$1 /mnt/Windows/Setup/Scripts/
+        echo "winutils/$1 will be installed"
+    fi
+}
+CopyDrivers (){
+    if [ -z "$1" ]; then
+        /opt/sysprep/driverscopy Windows10
+        echo "Windows10 drivers will be installed"
+    else
+        /opt/sysprep/driverscopy $1
+        echo "$1 drivers will be installed"
+    fi
 }
