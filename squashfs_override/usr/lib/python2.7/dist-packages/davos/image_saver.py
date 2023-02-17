@@ -49,6 +49,8 @@ class imageSaver(object):
             self.device = 'sda'
         elif os.path.exists('/dev/hda'):
             self.device = 'hda'
+        elif os.path.exists('/dev/vda'):
+            self.device = 'vda'
 
         # Start the image saver
         error_code = subprocess.call('yes 2>/dev/null|/usr/sbin/ocs-sr %s savedisk %s %s 2>&1 1>/dev/null | tee /var/log/davos_saver.log' % (self.manager.clonezilla_params['clonezilla_saver_params'], self.image_uuid, self.device), shell=True)
